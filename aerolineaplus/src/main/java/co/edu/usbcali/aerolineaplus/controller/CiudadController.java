@@ -16,12 +16,10 @@ import java.util.List;
 public class CiudadController {
 
     //Inyección de dependencias hacia CiudadService
-    private final CiudadRepository ciudadRepository;
     private final CiudadService ciudadService;
 
 
-    public CiudadController(CiudadRepository ciudadRepository, CiudadService ciudadService) {
-        this.ciudadRepository = ciudadRepository;
+    public CiudadController(CiudadService ciudadService) {
         this.ciudadService = ciudadService;
     }
 
@@ -33,8 +31,7 @@ public class CiudadController {
 
     @GetMapping(value = "/obtenerCiudades")
     public List<CiudadDTO> obtenerCiudades() {
-        List<Ciudad> listaCiudades = ciudadRepository.findAll();
-        return CiudadMapper.domainToDTOList(listaCiudades);
+        return ciudadService.obtenerCiudades();
     }
 
     @GetMapping(value = "/buscarCiudadPorId/{id}")

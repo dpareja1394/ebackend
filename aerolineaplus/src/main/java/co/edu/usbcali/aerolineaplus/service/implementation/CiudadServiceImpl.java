@@ -7,6 +7,9 @@ import co.edu.usbcali.aerolineaplus.mapper.CiudadMapper;
 import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
 import co.edu.usbcali.aerolineaplus.repository.PaisRepository;
 import co.edu.usbcali.aerolineaplus.service.CiudadService;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,5 +105,13 @@ public class CiudadServiceImpl implements CiudadService {
         ciudad = ciudadRepository.save(ciudad);
 
         return CiudadMapper.domainToDto(ciudad);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CiudadDTO> obtenerCiudades() {
+        List<Ciudad> listaCiudades = ciudadRepository.findAll();
+        List<CiudadDTO> listaCiudadesDTO = CiudadMapper.domainToDTOList(listaCiudades);
+        return listaCiudadesDTO;
     }
 }

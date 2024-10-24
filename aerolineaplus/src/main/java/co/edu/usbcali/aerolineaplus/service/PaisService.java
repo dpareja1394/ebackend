@@ -9,4 +9,5 @@ public interface PaisService {
     List<PaisDTO> obtenerPaises();
     PaisDTO modificarPais(PaisDTO paisDTO) throws Exception;
     PaisDTO buscarPaisPorCodigo(String codigo) throws Exception;
+    void eliminarPais(Integer id) throws Exception;
 }

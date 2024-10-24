@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.usbcali.aerolineaplus.domain.Pais;
 import co.edu.usbcali.aerolineaplus.dto.PaisDTO;
 import co.edu.usbcali.aerolineaplus.mapper.PaisMapper;
+import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
 import co.edu.usbcali.aerolineaplus.repository.PaisRepository;
 import co.edu.usbcali.aerolineaplus.service.PaisService;
 
@@ -16,9 +17,11 @@ import co.edu.usbcali.aerolineaplus.service.PaisService;
 public class PaisServiceImpl implements PaisService {
 
     private final PaisRepository paisRepository;
+    private final CiudadRepository ciudadRepository;
 
-    public PaisServiceImpl(PaisRepository paisRepository) {
+    public PaisServiceImpl(PaisRepository paisRepository, CiudadRepository ciudadRepository) {
         this.paisRepository = paisRepository;
+        this.ciudadRepository = ciudadRepository;
     }
 
     @Override
@@ -123,6 +126,30 @@ public class PaisServiceImpl implements PaisService {
 
         // Convertir el país a un DTO y retornar
         return PaisMapper.domainToDTO(pais);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public void eliminarPais(Integer id) throws Exception {
+        // Primero debemos validar que el id no sea nulo y que tampoco sea cero
+        if (id == null || id.equals(0)) {
+            throw new Exception("El id del país no puede ser nulo o cero");
+        }
+
+        // Segundo debemos validar que exista el país con el id que nos están pasando
+        Boolean existePais = paisRepository.existsById(id);
+        if (existePais == false) {
+            throw new Exception("No existe el país con el id" + id +" por lo tanto no se puede eliminar");
+        }
+
+        // Tercero validamos que el pais no tenga ciudades asociadas
+        Boolean existeAlgunaCiudadAsociadaAlPais = ciudadRepository.existsByPaisId(id);
+        if (existeAlgunaCiudadAsociadaAlPais == true) {
+            throw new Exception("El país con el id " + id + " tiene ciudades asociadas por lo tanto no se puede eliminar");
+        }
+
+        // Si el país no tiene ciudades asociadas, entonces lo eliminamos
+        paisRepository.deleteById(id);
     }
 
     
