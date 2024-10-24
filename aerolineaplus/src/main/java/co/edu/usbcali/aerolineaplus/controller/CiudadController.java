@@ -45,4 +45,10 @@ public class CiudadController {
         CiudadDTO ciudadResponse = ciudadService.modificarCiudad(ciudadDTO);
         return new ResponseEntity<>(ciudadResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/eliminarCiudad/{id}")
+    public ResponseEntity<Void> eliminarCiudad(@PathVariable("id") Integer idCiudad) throws Exception {
+        ciudadService.eliminarCiudad(idCiudad);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

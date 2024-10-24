@@ -9,4 +9,5 @@ public interface CiudadService {
     CiudadDTO buscarCiudadPorId(Integer id) throws Exception;
     CiudadDTO modificarCiudad(CiudadDTO ciudadDTO) throws Exception;
     List<CiudadDTO> obtenerCiudades();
+    void eliminarCiudad(Integer id) throws Exception;
 }
