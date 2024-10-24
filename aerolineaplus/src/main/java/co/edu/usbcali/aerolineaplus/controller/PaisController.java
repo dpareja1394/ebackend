@@ -48,4 +48,10 @@ public class PaisController {
         PaisDTO paisDTO = paisService.buscarPaisPorCodigo(codigo);
         return new ResponseEntity<>(paisDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/eliminarPais/{id}")
+    public ResponseEntity<Void> eliminarPais(@PathVariable("id") Integer idPais) throws Exception {
+        paisService.eliminarPais(idPais);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

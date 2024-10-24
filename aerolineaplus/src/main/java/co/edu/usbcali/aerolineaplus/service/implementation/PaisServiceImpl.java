@@ -145,7 +145,8 @@ public class PaisServiceImpl implements PaisService {
         // Tercero validamos que el pais no tenga ciudades asociadas
         Boolean existeAlgunaCiudadAsociadaAlPais = ciudadRepository.existsByPaisId(id);
         if (existeAlgunaCiudadAsociadaAlPais == true) {
-            throw new Exception("El país con el id " + id + " tiene ciudades asociadas por lo tanto no se puede eliminar");
+            throw new Exception("El país con el id " + id + 
+            " tiene ciudades asociadas por lo tanto no se puede eliminar");
         }
 
         // Si el país no tiene ciudades asociadas, entonces lo eliminamos
