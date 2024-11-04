@@ -11,9 +11,9 @@ services:
     ports:                               
       - "5432:5432"                     # Habilitamos el puerto 5432 para acceder a la db
     environment:                        # Creamos las variables del usuario contraseña y base de datos 
-      POSTGRES_USER: aerolineausbuser              #   que se crea cuando inicia docker
-      POSTGRES_PASSWORD: aerolineausbuser
-      POSTGRES_DB: aerolineausb
+      POSTGRES_USER: vuelosuser              #   que se crea cuando inicia docker
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: vuelosdb
 
 volumes:                                # Creamos y asignamos el volumen de docker
   aerolineadb:
