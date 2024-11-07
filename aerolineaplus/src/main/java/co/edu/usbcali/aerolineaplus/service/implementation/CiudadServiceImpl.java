@@ -4,6 +4,7 @@ import co.edu.usbcali.aerolineaplus.domain.Ciudad;
 import co.edu.usbcali.aerolineaplus.domain.Pais;
 import co.edu.usbcali.aerolineaplus.dto.CiudadDTO;
 import co.edu.usbcali.aerolineaplus.dto.request.CreateCiudadRequest;
+import co.edu.usbcali.aerolineaplus.dto.response.ListarCiudadesResponse;
 import co.edu.usbcali.aerolineaplus.mapper.CiudadMapper;
 import co.edu.usbcali.aerolineaplus.repository.AeropuertoRepository;
 import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
@@ -94,10 +95,11 @@ public class CiudadServiceImpl implements CiudadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CiudadDTO> obtenerCiudades() {
+    public List<ListarCiudadesResponse> obtenerCiudades() {
         List<Ciudad> listaCiudades = ciudadRepository.findAll();
-        List<CiudadDTO> listaCiudadesDTO = CiudadMapper.domainToDTOList(listaCiudades);
-        return listaCiudadesDTO;
+        List<ListarCiudadesResponse> listaCiudadesResponse = 
+            CiudadMapper.ciudadToListarCiudadesResponseList(listaCiudades);
+        return listaCiudadesResponse;
     }
 
     @Override

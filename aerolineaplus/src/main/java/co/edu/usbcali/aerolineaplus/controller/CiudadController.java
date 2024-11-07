@@ -2,6 +2,7 @@ package co.edu.usbcali.aerolineaplus.controller;
 
 import co.edu.usbcali.aerolineaplus.dto.CiudadDTO;
 import co.edu.usbcali.aerolineaplus.dto.request.CreateCiudadRequest;
+import co.edu.usbcali.aerolineaplus.dto.response.ListarCiudadesResponse;
 import co.edu.usbcali.aerolineaplus.service.CiudadService;
 import jakarta.validation.Valid;
 
@@ -30,7 +31,7 @@ public class CiudadController {
     }
 
     @GetMapping(value = "/obtenerCiudades")
-    public List<CiudadDTO> obtenerCiudades() {
+    public List<ListarCiudadesResponse> obtenerCiudades() {
         return ciudadService.obtenerCiudades();
     }
 
