@@ -1,10 +1,7 @@
 package co.edu.usbcali.aerolineaplus.controller;
 
-import co.edu.usbcali.aerolineaplus.domain.Ciudad;
 import co.edu.usbcali.aerolineaplus.dto.CiudadDTO;
 import co.edu.usbcali.aerolineaplus.dto.request.CreateCiudadRequest;
-import co.edu.usbcali.aerolineaplus.mapper.CiudadMapper;
-import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
 import co.edu.usbcali.aerolineaplus.service.CiudadService;
 import jakarta.validation.Valid;
 
