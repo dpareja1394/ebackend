@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.aerolineaplus.domain.Pais;
 import co.edu.usbcali.aerolineaplus.dto.PaisDTO;
+import co.edu.usbcali.aerolineaplus.dto.request.CreatePaisRequest;
 import co.edu.usbcali.aerolineaplus.mapper.PaisMapper;
 import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
 import co.edu.usbcali.aerolineaplus.repository.PaisRepository;
@@ -42,27 +43,13 @@ public class PaisServiceImpl implements PaisService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public PaisDTO guardarNuevoPais(PaisDTO paisDTO) throws Exception {
+    public PaisDTO guardarNuevoPais(CreatePaisRequest createPaisRequest) throws Exception {
         // 1. Validar el paisDTO que llegue al servicio
-        if(paisDTO == null) {
-            throw new Exception("El paisDTO no puede ser nulo");
+        if(createPaisRequest == null) {
+            throw new Exception("El Pais no puede ser nulo");
         }
-
-        // Validar los campos del paisDTO
-        if(paisDTO.getNombre() == null || paisDTO.getNombre().equals("")) {
-            throw new Exception("El nombre del país no puede ser nulo o vacío");
-        }
-
-        if(paisDTO.getCodigo() == null || paisDTO.getCodigo().equals("")) {
-            throw new Exception("El código del país no puede ser nulo o vacío");
-        }
-
-        if(paisDTO.getDescripcion() == null || paisDTO.getDescripcion().equals("")) {
-            throw new Exception("La descripción del país no puede ser nula o vacía");
-        }
-
         // Convertir el paisDTO a un pais
-        Pais pais = PaisMapper.dtoToDomain(paisDTO);
+        Pais pais = PaisMapper.createPaisRequestToDomain(createPaisRequest);
 
         // Guardar el país en la base de datos
         pais = paisRepository.save(pais);

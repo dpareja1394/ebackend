@@ -2,7 +2,9 @@ package co.edu.usbcali.aerolineaplus.controller;
 
 
 import co.edu.usbcali.aerolineaplus.dto.PaisDTO;
+import co.edu.usbcali.aerolineaplus.dto.request.CreatePaisRequest;
 import co.edu.usbcali.aerolineaplus.service.PaisService;
+import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +28,8 @@ public class PaisController {
     }
 
     @PostMapping(value = "/crearNuevoPais")
-    public ResponseEntity<PaisDTO> crearNuevoPais(@RequestBody PaisDTO paisDTO) throws Exception {
-        PaisDTO paisResponse = paisService.guardarNuevoPais(paisDTO);
+    public ResponseEntity<PaisDTO> crearNuevoPais(@RequestBody @Valid CreatePaisRequest createPaisRequest) throws Exception {
+        PaisDTO paisResponse = paisService.guardarNuevoPais(createPaisRequest);
         return new ResponseEntity<>(paisResponse, HttpStatus.CREATED);
     }
 

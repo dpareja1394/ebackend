@@ -2,6 +2,7 @@ package co.edu.usbcali.aerolineaplus.mapper;
 
 import co.edu.usbcali.aerolineaplus.domain.Pais;
 import co.edu.usbcali.aerolineaplus.dto.PaisDTO;
+import co.edu.usbcali.aerolineaplus.dto.request.CreatePaisRequest;
 
 import java.util.List;
 
@@ -41,6 +42,14 @@ public class PaisMapper {
 
     public static List<PaisDTO> domainToDTOList(List<Pais> paises) {
         return paises.stream().map(PaisMapper::domainToDTO).toList();
+    }
+
+    public static Pais createPaisRequestToDomain(CreatePaisRequest createPaisRequest) {
+        return Pais.builder()
+        .codigo(createPaisRequest.getCodigo())
+        .nombre(createPaisRequest.getNombre())
+        .descripcion(createPaisRequest.getDescripcion())
+        .build();
     }
 
 }

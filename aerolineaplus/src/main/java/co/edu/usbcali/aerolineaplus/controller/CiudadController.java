@@ -2,9 +2,12 @@ package co.edu.usbcali.aerolineaplus.controller;
 
 import co.edu.usbcali.aerolineaplus.domain.Ciudad;
 import co.edu.usbcali.aerolineaplus.dto.CiudadDTO;
+import co.edu.usbcali.aerolineaplus.dto.request.CreateCiudadRequest;
 import co.edu.usbcali.aerolineaplus.mapper.CiudadMapper;
 import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
 import co.edu.usbcali.aerolineaplus.service.CiudadService;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +27,8 @@ public class CiudadController {
     }
 
     @PostMapping(value = "/guardarNuevaCiudad")
-    public ResponseEntity<CiudadDTO> guardarNuevaCiudad(@RequestBody CiudadDTO ciudadDTO) throws Exception {
-        CiudadDTO ciudadResponse = ciudadService.guardarNuevaCiudad(ciudadDTO);
+    public ResponseEntity<CiudadDTO> guardarNuevaCiudad(@RequestBody @Valid CreateCiudadRequest createCiudadRequest) throws Exception {
+        CiudadDTO ciudadResponse = ciudadService.guardarNuevaCiudad(createCiudadRequest);
         return new ResponseEntity<>(ciudadResponse, HttpStatus.CREATED);
     }
 

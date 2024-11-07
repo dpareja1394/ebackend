@@ -3,6 +3,7 @@ package co.edu.usbcali.aerolineaplus.service.implementation;
 import co.edu.usbcali.aerolineaplus.domain.Ciudad;
 import co.edu.usbcali.aerolineaplus.domain.Pais;
 import co.edu.usbcali.aerolineaplus.dto.CiudadDTO;
+import co.edu.usbcali.aerolineaplus.dto.request.CreateCiudadRequest;
 import co.edu.usbcali.aerolineaplus.mapper.CiudadMapper;
 import co.edu.usbcali.aerolineaplus.repository.AeropuertoRepository;
 import co.edu.usbcali.aerolineaplus.repository.CiudadRepository;
@@ -30,28 +31,9 @@ public class CiudadServiceImpl implements CiudadService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public CiudadDTO guardarNuevaCiudad(CiudadDTO ciudadDTO) throws Exception {
-        //Validacion 1 id debe ser null
-        if (ciudadDTO.getId() != null) {
-            throw new Exception("El id debe ser nulo");
-        }
-
-        // Validacion 2 Que llegue el nombre
-        if (ciudadDTO.getNombre() == null || ciudadDTO.getNombre().equals("")) {
-            throw new Exception("El nombre no debe ser nulo");
-        }
-
-        // Validacion 3 Que llegue la descripcion
-        if (ciudadDTO.getDescripcion() == null || ciudadDTO.getDescripcion().equals("")) {
-            throw new Exception("La descripción no debe ser nula");
-        }
-
-        if (ciudadDTO.getPaisId() == null ) {
-            throw new Exception("El PaisId no debe ser nulo");
-        }
-
-        Ciudad ciudad = CiudadMapper.dtoToDomain(ciudadDTO);
-        Pais pais = paisRepository.findById(ciudadDTO.getPaisId())
+    public CiudadDTO guardarNuevaCiudad(CreateCiudadRequest createCiudadRequest) throws Exception {
+        Ciudad ciudad = CiudadMapper.createCiudadRequestToDomain(createCiudadRequest);
+        Pais pais = paisRepository.findById(createCiudadRequest.getPaisId())
             .orElseThrow(() -> new Exception("El País no existe"));
 
         ciudad.setPais(pais);
