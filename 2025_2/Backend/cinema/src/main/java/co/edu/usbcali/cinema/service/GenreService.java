@@ -1,0 +1,9 @@
+package co.edu.usbcali.cinema.service;
+
+import co.edu.usbcali.cinema.dto.GenreResponseDTO;
+
+import java.util.List;
+
+public interface GenreService {
+    List<GenreResponseDTO> getGenres();
+}

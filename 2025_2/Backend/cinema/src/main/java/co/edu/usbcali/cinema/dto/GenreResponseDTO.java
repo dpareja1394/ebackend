@@ -6,5 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GenreResponseDTO {
+    private Integer id;
     private String name;
 }

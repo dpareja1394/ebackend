@@ -4,6 +4,7 @@ import co.edu.usbcali.cinema.domain.Genre;
 import co.edu.usbcali.cinema.dto.GenreResponseDTO;
 import co.edu.usbcali.cinema.mapper.GenreMapper;
 import co.edu.usbcali.cinema.repository.GenreRepository;
+import co.edu.usbcali.cinema.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import java.util.List;
 public class GenreController {
     // Inyección de dependencias
     private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
     @GetMapping("/ping")
     String ping() {
@@ -27,8 +29,8 @@ public class GenreController {
 
     // Método para obtener todos los géneros
     @GetMapping("/all")
-    List<Genre> getAll() {
-        return genreRepository.findAll();
+    List<GenreResponseDTO> getAll() {
+        return genreService.getGenres();
     }
 
     // Método para obtener el nombre del Género por Id
