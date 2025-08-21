@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GenreController {
     // Inyección de dependencias
-    private final GenreRepository genreRepository;
     private final GenreService genreService;
 
     @GetMapping("/ping")
@@ -36,23 +35,17 @@ public class GenreController {
     // Método para obtener el nombre del Género por Id
     @GetMapping("/byId/{id}")
     String findNameById(@PathVariable Integer id) {
-        Genre genre = genreRepository.getReferenceById(id);
-        if (genre != null) {
-            return genre.getName();
-        }
-        return "Not found";
+        return genreService.findNameGenreById(id);
     }
 
     // Método para obtener el Género por Id
     @GetMapping("/id/{id}")
     ResponseEntity<GenreResponseDTO> findById(@PathVariable Integer id) {
-        Genre genre = genreRepository.getReferenceById(id);
-        if (genre != null) {
-            GenreResponseDTO response = GenreMapper
-                    .domainToGenreResponseDTO(genre);
-            return ResponseEntity.ok(response);
+        GenreResponseDTO response = genreService.findGenreById(id);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
         }
-        return null;
+        return ResponseEntity.ok(response);
     }
 
 

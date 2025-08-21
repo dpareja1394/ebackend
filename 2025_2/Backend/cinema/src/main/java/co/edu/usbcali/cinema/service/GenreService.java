@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface GenreService {
     List<GenreResponseDTO> getGenres();
+    String findNameGenreById(Integer id);
+    GenreResponseDTO findGenreById(Integer id);
 }
