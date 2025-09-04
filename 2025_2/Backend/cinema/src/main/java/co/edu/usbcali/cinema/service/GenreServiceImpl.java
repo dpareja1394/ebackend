@@ -1,12 +1,14 @@
 package co.edu.usbcali.cinema.service;
 
 import co.edu.usbcali.cinema.domain.Genre;
+import co.edu.usbcali.cinema.dto.GenreRequestDTO;
 import co.edu.usbcali.cinema.dto.GenreResponseDTO;
 import co.edu.usbcali.cinema.mapper.GenreMapper;
 import co.edu.usbcali.cinema.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -52,5 +54,21 @@ public class GenreServiceImpl implements GenreService{
             return response;
         }
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public GenreResponseDTO saveGenre(GenreRequestDTO genreRequestDTO) throws Exception {
+        // Validaciones de Campo
+        if (genreRequestDTO == null ) {
+            throw new Exception("El Género no puede ser nulo");
+        }
+        if (genreRequestDTO.getName() == null || genreRequestDTO.getName().trim().isEmpty()) {
+            throw new Exception("El Nombre No puede ser nulo ni vacío");
+        }
+        Genre genre = GenreMapper.genreRequestToDomain(genreRequestDTO);
+        genre = genreRepository.save(genre);
+        GenreResponseDTO responseDTO = GenreMapper.domainToGenreResponseDTO(genre);
+        return responseDTO;
     }
 }

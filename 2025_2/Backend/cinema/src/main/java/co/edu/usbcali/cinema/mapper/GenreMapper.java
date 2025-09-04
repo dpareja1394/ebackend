@@ -1,6 +1,7 @@
 package co.edu.usbcali.cinema.mapper;
 
 import co.edu.usbcali.cinema.domain.Genre;
+import co.edu.usbcali.cinema.dto.GenreRequestDTO;
 import co.edu.usbcali.cinema.dto.GenreResponseDTO;
 
 import java.util.ArrayList;
@@ -20,4 +21,9 @@ public class GenreMapper {
         return genres.stream().map(GenreMapper::domainToGenreResponseDTO).toList();
     }
 
+    public static Genre genreRequestToDomain(GenreRequestDTO genreRequestDTO) {
+        return Genre.builder()
+                .name(genreRequestDTO.getName())
+                .build();
+    }
 }

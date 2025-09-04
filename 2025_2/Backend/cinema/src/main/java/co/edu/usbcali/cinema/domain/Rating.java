@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "rating")
+@Data
 public class Rating {
 
     @Id
