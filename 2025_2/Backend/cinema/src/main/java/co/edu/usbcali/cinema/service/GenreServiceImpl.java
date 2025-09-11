@@ -71,4 +71,29 @@ public class GenreServiceImpl implements GenreService{
         GenreResponseDTO responseDTO = GenreMapper.domainToGenreResponseDTO(genre);
         return responseDTO;
     }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public GenreResponseDTO updateGenre(Integer id, GenreRequestDTO genreRequestDTO) throws Exception {
+        // Agregar validaciones de los campos y el id no sea null ni cero (0)
+        if (id == null || id == 0) {
+            throw new Exception("El id no puede ser nulo ni cero");
+        }
+        if (genreRequestDTO == null ) {
+            throw new Exception("El Género no puede ser nulo");
+        }
+        if (genreRequestDTO.getName() == null || genreRequestDTO.getName().trim().isEmpty()) {
+            throw new Exception("El Nombre No puede ser nulo ni vacío");
+        }
+
+        if (genreRepository.existsById(id)) {
+            Genre genre = genreRepository.findById(id).get();
+            genre.setName(genreRequestDTO.getName());
+            genre = genreRepository.save(genre);
+            GenreResponseDTO responseDTO = GenreMapper.domainToGenreResponseDTO(genre);
+            return responseDTO;
+        } else {
+            throw new Exception("No existe el género por id "+id);
+        }
+    }
 }

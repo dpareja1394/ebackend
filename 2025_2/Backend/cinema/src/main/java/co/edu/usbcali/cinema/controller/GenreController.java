@@ -50,5 +50,14 @@ public class GenreController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    ResponseEntity<GenreResponseDTO> updateGenre(
+            @PathVariable Integer id,
+            @RequestBody GenreRequestDTO genreRequestDTO)
+            throws Exception {
+        GenreResponseDTO responseDTO = genreService.updateGenre(id, genreRequestDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
 
 }

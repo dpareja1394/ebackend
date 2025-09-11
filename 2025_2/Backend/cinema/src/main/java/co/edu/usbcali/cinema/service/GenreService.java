@@ -10,4 +10,5 @@ public interface GenreService {
     String findNameGenreById(Integer id);
     GenreResponseDTO findGenreById(Integer id);
     GenreResponseDTO saveGenre(GenreRequestDTO genreRequestDTO) throws Exception;
+    GenreResponseDTO updateGenre(Integer id, GenreRequestDTO genreRequestDTO) throws Exception;
 }
