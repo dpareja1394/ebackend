@@ -1,6 +1,8 @@
 package co.edu.usbcali.cinema.controller;
 
 import co.edu.usbcali.cinema.domain.Genre;
+import co.edu.usbcali.cinema.dto.GenreResponseDTO;
+import co.edu.usbcali.cinema.mapper.GenreMapper;
 import co.edu.usbcali.cinema.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,13 @@ public class GenreController {
             genresString.add(genre.getName());
         }
         return genresString;
+    }
+
+    @GetMapping("/all/object")
+    public List<GenreResponseDTO> getGenresResponseDTO() {
+        List<Genre> genres = genreRepository.findAll();
+        List<GenreResponseDTO> responseDTOS = GenreMapper.entityToDtoList(genres);
+        return responseDTOS;
     }
 
 }
