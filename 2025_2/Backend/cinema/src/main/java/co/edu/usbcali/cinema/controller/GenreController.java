@@ -1,10 +1,7 @@
 package co.edu.usbcali.cinema.controller;
 
-import co.edu.usbcali.cinema.domain.Genre;
 import co.edu.usbcali.cinema.dto.GenreRequestDTO;
 import co.edu.usbcali.cinema.dto.GenreResponseDTO;
-import co.edu.usbcali.cinema.mapper.GenreMapper;
-import co.edu.usbcali.cinema.repository.GenreRepository;
 import co.edu.usbcali.cinema.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +48,15 @@ public class GenreController {
     ResponseEntity<GenreResponseDTO> saveGenre(@RequestBody GenreRequestDTO genreRequestDTO) throws Exception {
         GenreResponseDTO responseDTO = genreService.saveGenre(genreRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<GenreResponseDTO> updateGenre(
+            @PathVariable Integer id,
+            @RequestBody GenreRequestDTO genreRequestDTO)
+            throws Exception {
+        GenreResponseDTO responseDTO = genreService.updateGenre(id, genreRequestDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
 

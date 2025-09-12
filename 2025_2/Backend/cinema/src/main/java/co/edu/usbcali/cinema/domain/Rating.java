@@ -15,7 +15,7 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 10, nullable = false, unique = true, name = "title")
+    @Column(length = 10, nullable = false, unique = true, name = "code")
     private String code;
 
     @Column(name = "description")
