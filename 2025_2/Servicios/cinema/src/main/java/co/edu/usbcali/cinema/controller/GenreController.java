@@ -1,15 +1,13 @@
 package co.edu.usbcali.cinema.controller;
 
-import co.edu.usbcali.cinema.domain.Genre;
+import co.edu.usbcali.cinema.dto.GenreRequestDTO;
 import co.edu.usbcali.cinema.dto.GenreResponseDTO;
-import co.edu.usbcali.cinema.mapper.GenreMapper;
-import co.edu.usbcali.cinema.repository.GenreRepository;
+import co.edu.usbcali.cinema.service.GenreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/api/genre")
@@ -17,23 +15,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GenreController {
 
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
     @GetMapping("/all")
     public List<String> getGenresString() {
-        List<Genre> genres = genreRepository.findAll();
-        List<String> genresString = new ArrayList<>();
-        for (Genre genre : genres) {
-            genresString.add(genre.getName());
-        }
-        return genresString;
+        return genreService.getGenresString();
     }
 
     @GetMapping("/all/object")
     public List<GenreResponseDTO> getGenresResponseDTO() {
-        List<Genre> genres = genreRepository.findAll();
-        List<GenreResponseDTO> responseDTOS = GenreMapper.entityToDtoList(genres);
-        return responseDTOS;
+        return genreService.getGenresResponseDTO();
+    }
+
+    @PostMapping
+    public ResponseEntity<GenreResponseDTO> saveGenre(
+            @RequestBody GenreRequestDTO genreRequestDTO) throws Exception {
+        return new ResponseEntity<>
+                (genreService.saveGenre(genreRequestDTO), HttpStatus.CREATED);
     }
 
 }
