@@ -1,6 +1,7 @@
 package co.edu.usbcali.cinema.mapper;
 
 import co.edu.usbcali.cinema.domain.MovieDetail;
+import co.edu.usbcali.cinema.dto.MovieDetailRequestDTO;
 import co.edu.usbcali.cinema.dto.MovieDetailResponseDTO;
 
 import java.util.List;
@@ -26,6 +27,15 @@ public class MovieDetailMapper {
 
     public static List<MovieDetailResponseDTO> domainToResponseDTO(List<MovieDetail> movieDetails) {
         return movieDetails.stream().map(MovieDetailMapper::domainToResponseDTO).toList();
+    }
+
+    public static MovieDetail requestDTOToEntity(MovieDetailRequestDTO movieDetailRequestDTO) {
+        return MovieDetail.builder()
+                .durationMinutes(movieDetailRequestDTO.getDurationMinutes())
+                .releaseDate(movieDetailRequestDTO.getReleaseDate())
+                .imageUrl(movieDetailRequestDTO.getImageUrl())
+                .status(true)
+                .build();
     }
 
 
