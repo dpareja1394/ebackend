@@ -75,4 +75,9 @@ public class MovieDetailServiceImpl implements MovieDetailService {
 
         return MovieDetailMapper.domainToResponseDTO(movieDetail);
     }
+
+    @Override
+    public MovieDetailResponseDTO updateMovieDetail(Integer id, MovieDetailRequestDTO movieDetailRequestDTO) throws Exception {
+        return null;
+    }
 }

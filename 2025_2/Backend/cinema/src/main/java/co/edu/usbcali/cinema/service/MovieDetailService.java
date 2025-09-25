@@ -8,4 +8,5 @@ import java.util.List;
 public interface MovieDetailService {
     List<MovieDetailResponseDTO> findAll();
     MovieDetailResponseDTO saveMovieDetail(MovieDetailRequestDTO movieDetailRequestDTO) throws Exception;
+    MovieDetailResponseDTO updateMovieDetail(Integer id, MovieDetailRequestDTO movieDetailRequestDTO) throws Exception;
 }
