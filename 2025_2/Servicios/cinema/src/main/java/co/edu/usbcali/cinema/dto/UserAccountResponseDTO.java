@@ -1,6 +1,5 @@
 package co.edu.usbcali.cinema.dto;
 
-import co.edu.usbcali.cinema.domain.Role;
 import lombok.Builder;
 import lombok.Getter;
 

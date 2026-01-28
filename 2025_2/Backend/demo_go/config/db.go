@@ -10,7 +10,8 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := "host=localhost user=cinema_usr password=1234 dbname=cinema_db port=5432 sslmode=disable TimeZone=America/Bogota"
+	dsn := "host=localhost user=cinema_usr password=1234 " +
+		"dbname=cinema_db port=5432 sslmode=disable TimeZone=America/Bogota"
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,

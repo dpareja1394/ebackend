@@ -20,5 +20,6 @@ func SetupRoutes(router *gin.Engine) {
 
 	userAccountHandler := handlers.NewUserAccountHandler()
 
-	router.GET("/api/user-account", userAccountHandler.GetUserClientAccounts)
+	router.GET("/api/user-account",
+		userAccountHandler.GetUserClientAccounts)
 }
