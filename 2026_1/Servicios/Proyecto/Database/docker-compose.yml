@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  aerolineadb:
+    image: postgres:15-alpine
+    container_name: aerolineadbcontainer
+    restart: unless-stopped
+    volumes:
+      - aerolineadb:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: vuelosuser
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: vuelosdb
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vuelosuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aerolinea-network
+
+volumes:
+  aerolineadb:
+    driver: local
+
+networks:
+  aerolinea-network:
+    driver: bridge
