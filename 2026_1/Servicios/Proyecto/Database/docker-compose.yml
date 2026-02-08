@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   aerolineadb:
-    image: postgres:15-alpine
+    image: postgres:18.1-alpine
     container_name: aerolineadbcontainer
     restart: unless-stopped
     volumes:
