@@ -104,23 +104,8 @@ CREATE TABLE inventory (
 );
 
 -- Auditoría de inventario (opcional pero recomendada)
-CREATE TABLE inventory_movements (
-  id         SERIAL PRIMARY KEY,
-  product_id INT NOT NULL,
-  order_id   INT NULL,
-  type       TEXT NOT NULL CHECK (type IN ('DEBIT','CREDIT','RESERVE','RELEASE')),
-  qty        INT NOT NULL CHECK (qty > 0),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-  CONSTRAINT fk_inv_mov_product
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT,
-  CONSTRAINT fk_inv_mov_order
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
-);
-
--- (NOTA) La FK a orders requiere que orders exista antes.
--- Como orders se crea más abajo, haremos el CREATE de inventory_movements
--- después de orders. Si pegaste todo de una, comenta esta tabla y úsala al final.
+-- Se crea más abajo (sección 7), luego de crear `orders`,
+-- para que la FK `order_id -> orders(id)` exista al momento del CREATE TABLE.
 
 -- -------------------------
 -- 4) Carrito
@@ -231,6 +216,27 @@ CREATE INDEX idx_payments_order ON payments(order_id);
 -- -------------------------
 -- 7) Inventario_movements (ahora sí, con FK a orders)
 -- -------------------------
+
+-- Auditoría de inventario (opcional pero recomendada)
+CREATE TABLE inventory_movements (
+  id         SERIAL PRIMARY KEY,
+  product_id INT NOT NULL,
+  order_id   INT NULL,
+  type       TEXT NOT NULL CHECK (type IN ('DEBIT','CREDIT','RESERVE','RELEASE')),
+  qty        INT NOT NULL CHECK (qty > 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+  CONSTRAINT fk_inv_mov_product
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_inv_mov_order
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
+);
+
+CREATE INDEX idx_inventory_movements_product_created_at
+  ON inventory_movements(product_id, created_at DESC);
+
+CREATE INDEX idx_inventory_movements_order
+  ON inventory_movements(order_id);
 
 -- -------------------------
 -- 8) Seeds mínimos (opcional)
