@@ -238,13 +238,3 @@ CREATE INDEX idx_inventory_movements_product_created_at
 CREATE INDEX idx_inventory_movements_order
   ON inventory_movements(order_id);
 
--- -------------------------
--- 8) Seeds mínimos (opcional)
--- -------------------------
-
-INSERT INTO document_types (code, name) VALUES
-('CC', 'Cédula de ciudadanía'),
-('TI', 'Tarjeta de identidad'),
-('CE', 'Cédula de extranjería'),
-('PAS', 'Pasaporte')
-ON CONFLICT (code) DO NOTHING;
