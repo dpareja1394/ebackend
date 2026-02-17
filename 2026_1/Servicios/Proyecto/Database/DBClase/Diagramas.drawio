@@ -1,0 +1,113 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.5 Chrome/138.0.7204.251 Electron/37.6.1 Safari/537.36" version="28.2.5">
+  <diagram name="Página-1" id="kAbXs4AIkIjLIrEfE-SO">
+    <mxGraphModel dx="872" dy="484" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-3" value="ecommerce_usb_db" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Database_PostgreSQL_Server.svg;" vertex="1" parent="1">
+          <mxGeometry x="600" y="20" width="120.5" height="160.67" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-6" value="jdbc://localhost:5432/ecommerce_usb_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-4" target="RCBxnMRKkXTp-IwdRXZE-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-4" value="«Conexión DB»&lt;br&gt;&lt;b&gt;DataGrip&lt;/b&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="30" y="55.33000000000001" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-5" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="RCBxnMRKkXTp-IwdRXZE-4">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-8" value="jdbc://localhost:5432/ecommerce_usb_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-9" target="RCBxnMRKkXTp-IwdRXZE-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="340.33333333333337" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="405" y="205" />
+              <mxPoint x="405" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-14" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="30" y="160.00000000000006" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-9" value="«Java»&lt;br&gt;&lt;b&gt;Microservicio&lt;/b&gt;&lt;div&gt;&lt;b&gt;SpringBoot&lt;/b&gt;&lt;/div&gt;" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="RCBxnMRKkXTp-IwdRXZE-14">
+          <mxGeometry width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-10" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="RCBxnMRKkXTp-IwdRXZE-9">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-11" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.java" vertex="1" parent="RCBxnMRKkXTp-IwdRXZE-14">
+          <mxGeometry x="10" y="12.499999999999943" width="34.4" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-15" value="Máquina" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;verticalAlign=top;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="290" width="750" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-16" value="ecommerce_usb_db" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Database_PostgreSQL_Server.svg;" vertex="1" parent="1">
+          <mxGeometry x="740" y="460" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-18" value="Microservicio (Java - SpringBoot)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="110" y="340" width="590" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-20" value="Model&lt;div&gt;(Domain)&lt;/div&gt;" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="540" y="610" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-21" target="RCBxnMRKkXTp-IwdRXZE-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-21" value="Repository" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="540" y="465" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classicThin;startFill=1;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-22" target="RCBxnMRKkXTp-IwdRXZE-21">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="500" />
+              <mxPoint x="540" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-22" value="Services&lt;div&gt;(Logic)&lt;/div&gt;" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="320" y="465" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-23" value="Controllers&lt;div&gt;(Endpoints)&lt;/div&gt;" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="130" y="465" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-24" value="DTO" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="130" y="610" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-25" value="Mappers" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="320" y="610" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=130;exitDy=50;exitPerimeter=0;entryX=0;entryY=0;entryDx=0;entryDy=50;entryPerimeter=0;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-23" target="RCBxnMRKkXTp-IwdRXZE-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=40;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-23" target="RCBxnMRKkXTp-IwdRXZE-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=105;entryDy=30;entryPerimeter=0;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-22" target="RCBxnMRKkXTp-IwdRXZE-24">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="385" y="570" />
+              <mxPoint x="235" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=40;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-22" target="RCBxnMRKkXTp-IwdRXZE-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=0;entryDy=40;entryPerimeter=0;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-22" target="RCBxnMRKkXTp-IwdRXZE-20">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="570" />
+              <mxPoint x="540" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RCBxnMRKkXTp-IwdRXZE-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=105;entryDy=30;entryPerimeter=0;" edge="1" parent="1" source="RCBxnMRKkXTp-IwdRXZE-21" target="RCBxnMRKkXTp-IwdRXZE-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
