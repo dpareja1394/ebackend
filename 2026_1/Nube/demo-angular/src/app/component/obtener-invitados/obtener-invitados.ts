@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
-import {InvitadoResponse} from '../../model/invitado.dto';
+import {CrearInvitadoRequest, InvitadoResponse} from '../../model/invitado.dto';
 import {Invitado} from '../../service/invitado';
 
 @Component({
@@ -11,6 +11,7 @@ import {Invitado} from '../../service/invitado';
 export class ObtenerInvitados {
   invitados: InvitadoResponse[] | undefined;
   invitadoString : string | undefined;
+  crearInvitadoRq: CrearInvitadoRequest | undefined;
 
   constructor(
     private invitadoService: Invitado,
@@ -35,5 +36,9 @@ export class ObtenerInvitados {
         this.cdr.detectChanges();
       }
     );
+  }
+
+  protected crearInvitado() {
+    //this.invitadoService.crearInvitado(...)
   }
 }
