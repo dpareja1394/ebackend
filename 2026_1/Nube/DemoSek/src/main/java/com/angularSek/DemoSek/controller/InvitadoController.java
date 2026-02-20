@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api/invitados")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class InvitadoController {
 
     private final InvitadoService invitadoService;

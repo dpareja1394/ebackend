@@ -1,0 +1,29 @@
+<h1>Invitados</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Email</th>
+    <th>Telefono</th>
+    <th>Buscar</th>
+  </tr>
+  </thead>
+  <tbody>
+    @if (!invitados?.length) {
+      <tr>
+        <td colspan="4">No hay invitados registrados</td>
+      </tr>
+    }
+    @for (invitado of invitados; track invitado.idInvitado) {
+      <tr>
+        <td>{{ invitado.nombre }}</td>
+        <td>{{ invitado.email }}</td>
+        <td>{{ invitado.telefono }}</td>
+        <td><button (click)="buscarPorId(invitado.idInvitado)" title="Buscar">
+          Buscar
+        </button></td>
+      </tr>
+    }
+  </tbody>
+</table>
+<p>{{ invitadoString }}</p>
