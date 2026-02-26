@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "payment_method")
 @Data
@@ -23,5 +26,5 @@ public class PaymentMethod {
 
     @Column(name = "description")
     private String description;
-
+    
 }
