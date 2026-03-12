@@ -7,21 +7,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "payment_method")
+@Table(name = "theater")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentMethod {
+public class Theater {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 50)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "description")
-    private String description;
-    
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
+
+    @Column(name = "location")
+    private String location;
 }
