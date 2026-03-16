@@ -1,32 +1,36 @@
 package co.edu.usbcali.ecommerceusb.model;
 
-import co.edu.usbcali.ecommerceusb.model.enums.CartStatus;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "carts")
+@Table(name = "products")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Cart {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
-    private User user;
+    @Column(name = "name",  nullable = false)
+    private String name;
 
-    @Column(name = "status",  nullable = false)
-    private CartStatus status;
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "available", nullable = false)
+    private Boolean available;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
