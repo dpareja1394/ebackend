@@ -1,5 +1,7 @@
 package co.edu.usbcali.cinemapareja.controller;
 
+import co.edu.usbcali.cinemapareja.dto.response.GetMovieResponse;
+import co.edu.usbcali.cinemapareja.mapper.MovieMapper;
 import co.edu.usbcali.cinemapareja.model.Movie;
 import co.edu.usbcali.cinemapareja.repository.MovieRepository;
 import lombok.AllArgsConstructor;
@@ -25,14 +27,31 @@ public class MovieController {
     }
 
     @GetMapping("/all")
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<GetMovieResponse> getAllMovies() {
+        // Declarar nueva lista de moviesResponse
+        List<GetMovieResponse> moviesResponse;
+
+        // Ir al Repository y obtener todas las películas
+        List<Movie> movies = movieRepository.findAll();
+
+        // Convertir la lista de películas a lista de moviesResponse
+        moviesResponse = MovieMapper.entityToListGetMovieResponse(movies);
+
+        // Retornar la lista de moviesResponse
+        return moviesResponse;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Integer id) {
+    public ResponseEntity<GetMovieResponse> getMovieById(@PathVariable Integer id) {
+        // Buscar Entidad Movie por ID
+        Movie movie = movieRepository.getReferenceById(id);
+
+        // Convertir a DTO Response
+        GetMovieResponse movieResponse = MovieMapper.entityToGetMovieResponse(movie);
+
+        // Retornar DTO Response
         return new ResponseEntity<>(
-                movieRepository.getReferenceById(id),
+                movieResponse,
                 HttpStatus.OK
         );
     }
