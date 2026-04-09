@@ -1,5 +1,6 @@
 package co.edu.usbcali.cinemapareja.mapper;
 
+import co.edu.usbcali.cinemapareja.dto.request.CreateMovieRequest;
 import co.edu.usbcali.cinemapareja.dto.response.GetMovieResponse;
 import co.edu.usbcali.cinemapareja.model.Movie;
 
@@ -32,5 +33,21 @@ public class MovieMapper {
         // Retornar la lista de DTO GetMovieResponse
         return getMovieResponseList;*/
         return movies.stream().map(MovieMapper::entityToGetMovieResponse).toList();
+    }
+
+    public static Movie createMovieRequestToEntity(CreateMovieRequest createMovieRequest) {
+        /*// Instanciar objeto Movie
+        Movie movie = new Movie();
+
+        // Asignar valores a los atributos del objeto Movie
+        movie.setTitle(createMovieRequest.getTitle());
+        movie.setDescription(createMovieRequest.getDescription());
+
+        // Retornar objeto Movie
+        return movie;*/
+        return Movie.builder()
+                .title(createMovieRequest.getTitle())
+                .description(createMovieRequest.getDescription())
+                .build();
     }
 }
