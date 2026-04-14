@@ -3,7 +3,6 @@ package co.edu.usbcali.ecommerceusb.mapper;
 import co.edu.usbcali.ecommerceusb.dto.DocumentTypeResponse;
 import co.edu.usbcali.ecommerceusb.model.DocumentType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentTypeMapper {
