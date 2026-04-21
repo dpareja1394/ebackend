@@ -29,4 +29,10 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserById(id),
                 HttpStatus.OK);
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) throws Exception {
+        return new ResponseEntity<>(userService.getUserByEmail(email),
+                HttpStatus.OK);
+    }
 }
