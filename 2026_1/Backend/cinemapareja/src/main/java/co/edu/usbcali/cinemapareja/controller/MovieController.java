@@ -18,8 +18,6 @@ import java.util.List;
 @RequestMapping("/movies")
 public class MovieController {
 
-    // Inyecciones de dependencias
-    private final MovieRepository movieRepository;
     private final MovieService movieService;
 
     @GetMapping("/ping")
@@ -29,28 +27,12 @@ public class MovieController {
 
     @GetMapping("/all")
     public List<GetMovieResponse> getAllMovies() {
-        // Declarar nueva lista de moviesResponse
-        List<GetMovieResponse> moviesResponse;
-
-        // Ir al Repository y obtener todas las películas
-        List<Movie> movies = movieRepository.findAll();
-
-        // Convertir la lista de películas a lista de moviesResponse
-        moviesResponse = MovieMapper.entityToListGetMovieResponse(movies);
-
-        // Retornar la lista de moviesResponse
-        return moviesResponse;
+        return movieService.getAllMovies();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GetMovieResponse> getMovieById(@PathVariable Integer id) {
-        // Buscar Entidad Movie por ID
-        Movie movie = movieRepository.getReferenceById(id);
-
-        // Convertir a DTO Response
-        GetMovieResponse movieResponse = MovieMapper.entityToGetMovieResponse(movie);
-
-        // Retornar DTO Response
+        GetMovieResponse movieResponse = movieService.getMovieById(id);
         return new ResponseEntity<>(
                 movieResponse,
                 HttpStatus.OK

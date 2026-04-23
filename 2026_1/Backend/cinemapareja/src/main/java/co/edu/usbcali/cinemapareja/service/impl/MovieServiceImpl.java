@@ -9,6 +9,8 @@ import co.edu.usbcali.cinemapareja.service.MovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class MovieServiceImpl implements MovieService{
@@ -43,5 +45,20 @@ public class MovieServiceImpl implements MovieService{
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @Override
+    public List<GetMovieResponse> getAllMovies() {
+        List<Movie> movies = movieRepository.findAll();
+        List<GetMovieResponse> getMovieResponseList = MovieMapper.entityToListGetMovieResponse(movies);
+        return getMovieResponseList;
+    }
+
+    @Override
+    public GetMovieResponse getMovieById(Integer id) {
+        Movie movie = movieRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
+        GetMovieResponse getMovieResponse = MovieMapper.entityToGetMovieResponse(movie);
+        return getMovieResponse;
     }
 }
