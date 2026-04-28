@@ -77,6 +77,12 @@ public class UserServiceImpl implements UserService {
         return UserMapper.modelToUserResponse(userByEmail);
     }
 
+    /**
+     * Este método sirve para crear un usuario
+     * @param createUserRequest
+     * @return
+     * @throws Exception
+     */
     @Override
     public UserResponse createUser(CreateUserRequest createUserRequest) throws Exception {
         // Validar el objeto createUserRequest
@@ -143,19 +149,8 @@ public class UserServiceImpl implements UserService {
             throw new Exception("Ya existe un usuario con el documento y tipo de documento ingresados");
         }
 
-        // Convertir el objeto createUserRequest a User
-        User user = User.builder()
-                .fullName(createUserRequest.getFullName())
-                .phone(createUserRequest.getPhone())
-                .email(createUserRequest.getEmail())
-                .documentType(documentType)
-                .documentNumber(createUserRequest.getDocumentNumber())
-                .birthDate(
-                        LocalDate.parse(
-                                createUserRequest.getBirthDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .country(createUserRequest.getCountry())
-                .address(createUserRequest.getAddress())
-                .build();
+        // Mapear User
+        User user = UserMapper.createUserRequestToUser(createUserRequest, documentType);
 
         user = userRepository.save(user); // Persistir el usuario en la base de datos
         UserResponse userResponse = UserMapper.modelToUserResponse(user); // Mapear a Response
