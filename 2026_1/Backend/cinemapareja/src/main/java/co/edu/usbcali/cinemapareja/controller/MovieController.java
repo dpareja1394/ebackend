@@ -2,9 +2,6 @@ package co.edu.usbcali.cinemapareja.controller;
 
 import co.edu.usbcali.cinemapareja.dto.request.CreateMovieRequest;
 import co.edu.usbcali.cinemapareja.dto.response.GetMovieResponse;
-import co.edu.usbcali.cinemapareja.mapper.MovieMapper;
-import co.edu.usbcali.cinemapareja.model.Movie;
-import co.edu.usbcali.cinemapareja.repository.MovieRepository;
 import co.edu.usbcali.cinemapareja.service.MovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

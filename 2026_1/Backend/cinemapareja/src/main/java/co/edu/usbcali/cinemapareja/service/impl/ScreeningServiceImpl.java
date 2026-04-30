@@ -1,7 +1,9 @@
 package co.edu.usbcali.cinemapareja.service.impl;
 
 import co.edu.usbcali.cinemapareja.dto.request.CreateScreeningRequest;
+import co.edu.usbcali.cinemapareja.dto.request.UpdateScreeningRequest;
 import co.edu.usbcali.cinemapareja.dto.response.CreateScreeningResponse;
+import co.edu.usbcali.cinemapareja.dto.response.UpdateScreeningResponse;
 import co.edu.usbcali.cinemapareja.mapper.ScreeningMapper;
 import co.edu.usbcali.cinemapareja.model.Movie;
 import co.edu.usbcali.cinemapareja.model.Screening;
@@ -68,6 +70,51 @@ public class ScreeningServiceImpl implements ScreeningService {
             screening = screeningRepository.save(screening);
             // Mapear la entidad a DTO y retornar
             return ScreeningMapper.entityToCreateScreeningResponse(screening);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public UpdateScreeningResponse updateScreening(
+            Long id, UpdateScreeningRequest updateScreeningRequest) throws Exception {
+        try {
+            // Validar cada campo
+            // Validar que el objeto no sea nulo
+            if(Objects.isNull(updateScreeningRequest)) {
+                throw new Exception("El objeto UpdateScreeningRequest no puede ser nulo.");
+            }
+            // Validar el id que llega en el método
+            if(Objects.isNull(id) || id <= 0) {
+                throw new Exception("El id no puede ser nulo, tampoco puede ser menor o igual a 0.");
+            }
+
+            // Validar que el campo theaterId venga con valor
+            if(Objects.isNull(updateScreeningRequest.getTheaterId()) ||
+                    updateScreeningRequest.getTheaterId() <= 0) {
+                throw new Exception("El campo theaterId no puede ser nulo.");
+            }
+
+            // Validar el campo de DateTime venga con un valor
+            if(Objects.isNull(updateScreeningRequest.getDateTime())) {
+                throw new Exception("La fecha no puede ser nula.");
+            }
+
+            // Validar que el Screening exista en base de datos
+            Screening screening = screeningRepository.findById(id)
+                    .orElseThrow(() -> new Exception("No se ha encontrado un Screening con id "+id));
+
+            // Validar que Theater exista en base de datos
+            Theater theater = theaterRespository.findById(updateScreeningRequest.getTheaterId())
+                    .orElseThrow(
+                            () -> new Exception("No se ha encontrado el Theater con id "+updateScreeningRequest.getTheaterId()));
+
+            // Actualizar los datos del Screening
+            screening.setTheater(theater);
+            screening.setDateTime(updateScreeningRequest.getDateTime());
+
+            screening = screeningRepository.save(screening);
+            return ScreeningMapper.entityToUpdateScreeningResponse(screening);
         } catch (Exception e) {
             throw e;
         }
