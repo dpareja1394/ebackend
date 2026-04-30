@@ -22,7 +22,7 @@ public class ScreeningMapper {
     }
 
     public static UpdateScreeningResponse entityToUpdateScreeningResponse(Screening screening) {
-        return CreateScreeningResponse.builder()
+        return UpdateScreeningResponse.builder()
                 .id(screening.getId())
                 .movieName(Objects.nonNull(screening.getMovie()) ? screening.getMovie().getTitle() : null)
                 .theaterName(Objects.nonNull(screening.getTheater()) ? screening.getTheater().getName() : null)
