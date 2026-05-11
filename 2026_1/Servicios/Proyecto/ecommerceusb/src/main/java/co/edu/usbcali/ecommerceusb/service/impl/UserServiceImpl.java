@@ -1,6 +1,7 @@
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateUserRequest;
+import co.edu.usbcali.ecommerceusb.dto.UpdateUserRequest;
 import co.edu.usbcali.ecommerceusb.dto.UserResponse;
 import co.edu.usbcali.ecommerceusb.mapper.UserMapper;
 import co.edu.usbcali.ecommerceusb.model.DocumentType;
@@ -12,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -151,6 +152,96 @@ public class UserServiceImpl implements UserService {
 
         // Mapear User
         User user = UserMapper.createUserRequestToUser(createUserRequest, documentType);
+
+        user = userRepository.save(user); // Persistir el usuario en la base de datos
+        UserResponse userResponse = UserMapper.modelToUserResponse(user); // Mapear a Response
+        return userResponse; // Retornar el Response
+    }
+
+    @Override
+    public UserResponse updateUser(Integer id, UpdateUserRequest updateUserRequest) throws Exception {
+        // Validar que el id no sea nulo ni menor o igual a cero
+        if (id == null || id <= 0) {
+            throw new Exception("Debe ingresar el id del usuario");
+        }
+
+        // Validar que el usuario no sea nulo
+        if (Objects.isNull(updateUserRequest)) {
+            throw new Exception("El objeto updateUserRequest no puede ser nulo");
+        }
+
+        // Validar que el campo fullName no sea nulo
+        if(Objects.isNull(updateUserRequest.getFullName()) ||
+                updateUserRequest.getFullName().isBlank()) {
+            throw new Exception("El campo fullName no puede ser nulo ni vacío");
+        }
+
+        // Validar que el campo phone no sea nulo ni vacío
+        if(Objects.isNull(updateUserRequest.getPhone()) ||
+                updateUserRequest.getPhone().isBlank()) {
+            throw new Exception("El campo phone no puede ser nulo ni vacío");
+        }
+
+        // Validar que el email no sea nulo ni vacío
+        if(Objects.isNull(updateUserRequest.getEmail())
+                || updateUserRequest.getEmail().isBlank()) {
+            throw new Exception("El campo email no puede ser nulo ni vacío");
+        }
+
+        // Validar que el campo documentTypeId no sea nulo
+        if (updateUserRequest.getDocumentTypeId() == null || updateUserRequest.getDocumentTypeId() <= 0) {
+            throw new Exception("El campo documentTypeId debe contener un valor mayor a 0");
+        }
+
+        // Validar el campo documentNumber no sea nulo ni vacío
+        if (updateUserRequest.getDocumentNumber() == null || updateUserRequest.getDocumentNumber().isBlank()) {
+            throw new Exception("El campo documentNumber no puede estar nulo ni vacío");
+        }
+
+        // Validar campo birthDate
+        if (Objects.isNull(updateUserRequest.getBirthDate()) || updateUserRequest.getBirthDate().isBlank()) {
+            throw new Exception("El campo birthDate no puede estar nulo ni vacío");
+        }
+
+        // Validar campo country
+        if (Objects.isNull(updateUserRequest.getCountry()) || updateUserRequest.getCountry().isBlank()) {
+            throw new Exception("El campo country no puede estar nulo ni vacío");
+        }
+
+        // Validar campo address
+        if (Objects.isNull(updateUserRequest.getAddress()) || updateUserRequest.getAddress().isBlank()) {
+            throw new Exception("El campo address no puede estar nulo ni vacío");
+        }
+
+        // Validar que existe el document type, para no tener problemas de integridad referencial
+        DocumentType documentType = documentTypeRepository.findById(updateUserRequest.getDocumentTypeId())
+                .orElseThrow(() -> new Exception("El tipo de documento no existe"));
+
+        // Validar que no exista un usuario creado con el mismo email
+        if (userRepository.existsByIdNotAndEmail(id, updateUserRequest.getEmail())) {
+            throw new Exception("Ya existe un usuario con el email ingresado");
+        }
+
+        // Validar que no exista un usuario creado con el mismo documento y tipo de documento
+        if (userRepository.existsByIdNotAndDocumentNumberAndDocumentTypeId(id, updateUserRequest.getDocumentNumber(),
+                updateUserRequest.getDocumentTypeId())) {
+            throw new Exception("Ya existe un usuario con el documento y tipo de documento ingresados");
+        }
+
+        // Mapear User
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
+        user.setFullName(updateUserRequest.getFullName());
+        user.setPhone(updateUserRequest.getPhone());
+        user.setEmail(updateUserRequest.getEmail());
+        user.setDocumentType(documentType);
+        user.setDocumentNumber(updateUserRequest.getDocumentNumber());
+        user.setBirthDate(
+                LocalDate.parse(
+                        updateUserRequest.getBirthDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        user.setCountry(updateUserRequest.getCountry());
+        user.setAddress(updateUserRequest.getAddress());
+        user.setUpdatedAt(OffsetDateTime.now());
 
         user = userRepository.save(user); // Persistir el usuario en la base de datos
         UserResponse userResponse = UserMapper.modelToUserResponse(user); // Mapear a Response
