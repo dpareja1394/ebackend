@@ -264,7 +264,7 @@ JOIN (VALUES
     ('COT-2024-001', 'Tapetes originales Chevrolet', 280000),
     ('COT-2024-003', 'Protector de carrocería PPF', 1800000),
     ('COT-2024-003', 'Alarma con GPS incorporado',  650000)
-) AS a(codigo, desc, precio) ON c.codigo = a.codigo;
+) AS a(codigo, "desc", precio) ON c.codigo = a.codigo;
 
 -- ============================================================
 -- SOLICITUDES DE CRÉDITO
