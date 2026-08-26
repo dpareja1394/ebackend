@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum VisibilidadPerfil {
+public enum VisibilidadPerfil implements IValorDbEnum {
     PUBLICO("publico"),
     PRIVADO("privado");
 
