@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum EstadoDenuncia {
+public enum EstadoDenuncia implements IValorDbEnum {
     PENDIENTE("pendiente"),
     REVISADA("revisada"),
     DESCARTADA("descartada");

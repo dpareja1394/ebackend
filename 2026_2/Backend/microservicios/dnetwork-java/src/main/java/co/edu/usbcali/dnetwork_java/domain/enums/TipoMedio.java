@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TipoMedio {
+public enum TipoMedio implements IValorDbEnum {
     IMAGEN("imagen"),
     VIDEO("video");
 

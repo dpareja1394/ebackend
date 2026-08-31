@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TipoNotificacion {
+public enum TipoNotificacion implements IValorDbEnum {
     NUEVO_SEGUIDOR("nuevo_seguidor"),
     SOLICITUD_SEGUIMIENTO("solicitud_seguimiento"),
     LIKE("like"),

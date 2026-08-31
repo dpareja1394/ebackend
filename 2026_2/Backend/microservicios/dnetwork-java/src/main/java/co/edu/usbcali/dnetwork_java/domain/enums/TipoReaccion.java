@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TipoReaccion {
+public enum TipoReaccion implements IValorDbEnum {
     LIKE("like"),
     DISLIKE("dislike");
 

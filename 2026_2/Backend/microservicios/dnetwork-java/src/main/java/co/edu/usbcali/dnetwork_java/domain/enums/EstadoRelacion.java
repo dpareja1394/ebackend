@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum EstadoRelacion {
+public enum EstadoRelacion implements IValorDbEnum {
     PENDIENTE("pendiente"),
     ACEPTADA("aceptada"),
     RECHAZADA("rechazada");

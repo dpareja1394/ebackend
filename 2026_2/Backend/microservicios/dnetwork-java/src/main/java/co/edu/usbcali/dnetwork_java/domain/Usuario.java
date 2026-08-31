@@ -28,7 +28,7 @@ public class Usuario {
     private String username;
 
     @Column(name = "password_hash", nullable = false, length = 255)
-    private String passworHash;
+    private String passwordHash;
 
     @Column(name = "last_login", nullable = true)
     private LocalDateTime lastLogin;

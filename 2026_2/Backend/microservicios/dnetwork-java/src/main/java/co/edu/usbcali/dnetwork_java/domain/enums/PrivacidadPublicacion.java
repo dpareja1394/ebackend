@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum PrivacidadPublicacion {
+public enum PrivacidadPublicacion implements IValorDbEnum {
     PUBLICO("publico"),
     SEGUIDORES("seguidores"),
     PRIVADO("privado");
