@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "reservas")
@@ -38,12 +38,12 @@ public class Reserva {
     private BigDecimal montoReserva;
 
     @Column(name = "vigencia_hasta", nullable = false)
-    private LocalDateTime vigenciaHasta;
+    private OffsetDateTime vigenciaHasta;
 
     // Valores permitidos: ACTIVA, EXPIRADA, CANCELADA, CONVERTIDA
     @Column(name = "estado", length = 20, nullable = false)
     private String estado;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "pagos")
@@ -41,8 +41,8 @@ public class Pago {
     private String referenciaExterna;
 
     @Column(name = "fecha_pago")
-    private LocalDateTime fechaPago;
+    private OffsetDateTime fechaPago;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 }

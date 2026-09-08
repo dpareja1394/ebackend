@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "tokens_recuperacion")
@@ -28,8 +28,8 @@ public class TokenRecuperacion {
     private Boolean usado;
 
     @Column(name = "fecha_expiracion", nullable = false)
-    private LocalDateTime fechaExpiracion;
+    private OffsetDateTime fechaExpiracion;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 }

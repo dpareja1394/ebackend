@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "parametros_sistema")
@@ -35,5 +35,5 @@ public class ParametroSistema {
     private Usuario usuarioActualiza;
 
     @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    private OffsetDateTime fechaActualizacion;
 }

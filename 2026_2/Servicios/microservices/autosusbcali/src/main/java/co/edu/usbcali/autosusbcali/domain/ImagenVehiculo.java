@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "imagenes_vehiculo")
@@ -31,5 +31,5 @@ public class ImagenVehiculo {
     private Boolean esPrincipal;
 
     @Column(name = "fecha_carga", nullable = false)
-    private LocalDateTime fechaCarga;
+    private OffsetDateTime fechaCarga;
 }

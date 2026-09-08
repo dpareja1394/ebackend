@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "oportunidades_venta")
@@ -38,8 +38,8 @@ public class OportunidadVenta {
     private String origen;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    private OffsetDateTime fechaActualizacion;
 }

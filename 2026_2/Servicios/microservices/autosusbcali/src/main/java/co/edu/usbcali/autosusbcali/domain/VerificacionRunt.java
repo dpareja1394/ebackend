@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "verificaciones_runt")
@@ -47,5 +47,5 @@ public class VerificacionRunt {
     private Usuario usuarioConsulta;
 
     @Column(name = "fecha_consulta", nullable = false)
-    private LocalDateTime fechaConsulta;
+    private OffsetDateTime fechaConsulta;
 }

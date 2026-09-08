@@ -8,7 +8,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "transacciones_pasarela")
@@ -41,5 +41,5 @@ public class TransaccionPasarela {
     private String respuestaRaw;
 
     @Column(name = "fecha_transaccion", nullable = false)
-    private LocalDateTime fechaTransaccion;
+    private OffsetDateTime fechaTransaccion;
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "citas_servicio")
@@ -33,7 +33,7 @@ public class CitaServicio {
     private String tipoServicio;
 
     @Column(name = "fecha_cita", nullable = false)
-    private LocalDateTime fechaCita;
+    private OffsetDateTime fechaCita;
 
     // Valores permitidos: AGENDADA, CONFIRMADA, REALIZADA, CANCELADA
     @Column(name = "estado", length = 20, nullable = false)
@@ -43,5 +43,5 @@ public class CitaServicio {
     private String observaciones;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 }

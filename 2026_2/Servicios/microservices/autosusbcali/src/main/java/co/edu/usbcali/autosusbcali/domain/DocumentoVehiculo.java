@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "documentos_vehiculo")
@@ -39,7 +39,7 @@ public class DocumentoVehiculo {
     private Boolean validado;
 
     @Column(name = "fecha_validacion")
-    private LocalDateTime fechaValidacion;
+    private OffsetDateTime fechaValidacion;
 
     @ManyToOne
     @JoinColumn(name = "usuario_valida_id")

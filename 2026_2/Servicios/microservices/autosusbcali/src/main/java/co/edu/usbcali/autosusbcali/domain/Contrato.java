@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "contratos")
@@ -34,8 +34,8 @@ public class Contrato {
     private Boolean firmadoAsesor;
 
     @Column(name = "fecha_firma")
-    private LocalDateTime fechaFirma;
+    private OffsetDateTime fechaFirma;
 
     @Column(name = "fecha_generacion", nullable = false)
-    private LocalDateTime fechaGeneracion;
+    private OffsetDateTime fechaGeneracion;
 }

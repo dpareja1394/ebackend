@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "pqrs")
@@ -50,8 +50,8 @@ public class Pqrs {
     private String respuesta;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 
     @Column(name = "fecha_cierre")
-    private LocalDateTime fechaCierre;
+    private OffsetDateTime fechaCierre;
 }

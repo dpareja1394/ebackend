@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "vehiculos")
@@ -52,18 +52,18 @@ public class Vehiculo {
     private String descripcion;
 
     @Column(name = "publicado_en")
-    private LocalDateTime publicadoEn;
+    private OffsetDateTime publicadoEn;
 
     @Column(name = "retirado_en")
-    private LocalDateTime retiradoEn;
+    private OffsetDateTime retiradoEn;
 
     @ManyToOne
     @JoinColumn(name = "usuario_registra_id", nullable = false)
     private Usuario usuarioRegistra;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    private OffsetDateTime fechaActualizacion;
 }

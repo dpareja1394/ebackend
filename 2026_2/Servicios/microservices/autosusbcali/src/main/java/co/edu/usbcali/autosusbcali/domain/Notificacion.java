@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "notificaciones")
@@ -44,8 +44,8 @@ public class Notificacion {
     private Long referenciaId;
 
     @Column(name = "fecha_envio")
-    private LocalDateTime fechaEnvio;
+    private OffsetDateTime fechaEnvio;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private OffsetDateTime fechaCreacion;
 }

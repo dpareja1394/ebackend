@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "tramites_traspaso")
@@ -33,8 +33,8 @@ public class TramiteTraspaso {
     private Usuario usuarioGestiona;
 
     @Column(name = "fecha_inicio", nullable = false)
-    private LocalDateTime fechaInicio;
+    private OffsetDateTime fechaInicio;
 
     @Column(name = "fecha_completado")
-    private LocalDateTime fechaCompletado;
+    private OffsetDateTime fechaCompletado;
 }
