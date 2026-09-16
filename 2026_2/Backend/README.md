@@ -60,10 +60,23 @@ Ejemplo de URI de conexión PostgreSQL:
 
 ---
 
-## Scripts SQL de ejemplo
+## Documentación formal del backend
 
-- Colocar scripts de creación y datos de ejemplo en `sql/`.
-- Un script típico incluye la creación de esquemas, tablas y algunos inserts para pruebas.
+Se encuentran disponibles las referencias documentadas para la arquitectura y el onboarding del equipo:
+
+- [Documentación técnica del backend](./documentacion/doc-tecnica-backend.md)
+- [Guía de onboarding del equipo](./documentacion/doc-onboarding-equipo.md)
+- [Índice de documentación](./documentacion/README.md)
+
+## Base de datos y esquema
+
+Los scripts de base de datos del proyecto están en la carpeta `database/`:
+
+- [create-db.sql](./database/create-db.sql)
+- [schema_red_social.sql](./database/schema_red_social.sql)
+- [data_test_red_social.sql](./database/data_test_red_social.sql)
+
+Estos archivos definen el esquema del backend social y los datos iniciales para pruebas y validación.
 
 ---
 

@@ -1,5 +1,30 @@
 # Bitácora de cambios
 
+## Fecha: 2026-09-15
+
+### Cambios registrados en el repositorio
+
+- Se creó la documentación formal del proyecto en `Servicios/documentacion/`.
+- Se agregó la documentación técnica del proyecto: `doc-tecnica-servicios.md`.
+- Se agregó la guía de onboarding para el equipo: `doc-onboarding-equipo-servicios.md`.
+- Se creó el índice de documentación: `Servicios/documentacion/README.md`.
+- Se creó el README del proyecto en `Servicios/README.md` con referencias a requisitos, esquema SQL, documentación y microservicio.
+- Se añadieron referencias cruzadas a la base de datos y a los scripts `schema.sql`, `create-db.sql` y `seed.sql`.
+- Se documentó el alcance del sistema de concesionaria y su estructura funcional.
+
+### Trabajo realizado durante la jornada
+
+- Se revisó el proyecto de servicios desde la lista de requisitos funcionales hasta el modelado inicial relacional.
+- Se validó la estructura de la carpeta `Servicios` y la relación entre negocio, scripts SQL y microservicio.
+- Se organizó la documentación para uso académico y para revisión en GitHub.
+- Se dejó una base clara para continuar la implementación del backend en Spring Boot.
+
+### Estado al cierre
+
+La documentación del proyecto Servicios quedó organizada y útil para revisión, onboarding y continuidad del desarrollo. La carpeta mantiene trazabilidad del negocio, del diseño del modelo y de la arquitectura propuesta.
+
+---
+
 ## Fecha: 2026-09-07
 
 ### Cambios registrados en el repositorio
