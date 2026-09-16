@@ -1,7 +1,7 @@
 package co.edu.usbcali.dnetwork_java.controller;
 
-import co.edu.usbcali.dnetwork_java.domain.Etiqueta;
-import co.edu.usbcali.dnetwork_java.repository.EtiquetaRepository;
+import co.edu.usbcali.dnetwork_java.dto.response.ObtenerEtiquetaResponse;
+import co.edu.usbcali.dnetwork_java.service.EtiquetaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +15,9 @@ import java.util.List;
 @RequestMapping("/etiquetas")
 public class EtiquetaController {
 
-    // Inyección de dependencias
+    // Inyección de dependencias hacia el Service
     @Autowired
-    private EtiquetaRepository etiquetaRepository;
+    private EtiquetaService etiquetaService;
 
     @GetMapping("/ping")
     String pingPong() {
@@ -30,13 +30,12 @@ public class EtiquetaController {
     }
 
     @GetMapping("/obtener-etiquetas")
-    List<Etiqueta> obtenerEtiquetas() {
-        return etiquetaRepository.findAll();
+    List<ObtenerEtiquetaResponse> obtenerEtiquetas() {
+        return etiquetaService.obtenerEtiquetas();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Etiqueta> obtenerEtiquetaPorId(@PathVariable Integer id) {
-        Etiqueta etiqueta = etiquetaRepository.findById(id).orElse(null);
-        return ResponseEntity.ok(etiqueta);
+    ResponseEntity<ObtenerEtiquetaResponse> obtenerEtiquetaPorId(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(etiquetaService.obtenerEtiquetaPorId(id));
     }
 }
