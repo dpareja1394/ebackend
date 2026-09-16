@@ -7,6 +7,8 @@ import co.edu.usbcali.dnetwork_java.mapper.EtiquetaMapper;
 import co.edu.usbcali.dnetwork_java.repository.EtiquetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,7 @@ public class EtiquetaServiceImpl implements EtiquetaService{
     private EtiquetaRepository etiquetaRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ObtenerEtiquetaResponse> obtenerEtiquetas() {
         List<Etiqueta> todasLasEtiquetas = etiquetaRepository.findAll();
         List<ObtenerEtiquetaResponse> etiquetasResponses =
@@ -25,6 +28,7 @@ public class EtiquetaServiceImpl implements EtiquetaService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ObtenerEtiquetaResponse obtenerEtiquetaPorId(Integer id) throws Exception {
         // Validar que id no sea nulo
         if (id == null) {
@@ -52,7 +56,35 @@ public class EtiquetaServiceImpl implements EtiquetaService{
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public ObtenerEtiquetaResponse crearEtiqueta(CrearEtiquetaRequest crearEtiqueta) throws Exception {
-        return null;
+        // Validaciones lógicas para crear etiqueta
+        // Validar que el objeto no sea nulo
+        if (crearEtiqueta == null) {
+            throw new Exception("El objeto a crear no puede ser nulo");
+        }
+
+        // Validar que la etiqueta venga con nombre
+        if (crearEtiqueta.nombre() == null || crearEtiqueta.nombre().isBlank()) {
+            throw new Exception("El nombre de la etiqueta no puede estar vacío ni ser nulo");
+        }
+
+        // Validar con Repository que no exista una etiqueta con ese nombre
+        Boolean existeEtiquetaPorNombre = etiquetaRepository.existsByNombre(crearEtiqueta.nombre());
+        if (existeEtiquetaPorNombre) {
+            throw new Exception("El nombre de la etiqueta ya existe");
+        }
+
+        // Mapear desde el Request hacia la Entidad de Dominio
+        Etiqueta etiqueta = EtiquetaMapper.crearEtiquetaRequestAEtiqueta(crearEtiqueta);
+
+        // Persistir (almacenar) información en la base de datos
+        etiqueta = etiquetaRepository.save(etiqueta);
+
+        // Mapear desde Entidad de Dominio hacia el Response
+        ObtenerEtiquetaResponse etiquetaResponse = EtiquetaMapper.etiquetaAObtenerEtiquetaResponse(etiqueta);
+
+        // Método retorna EtiquetaResponse
+        return etiquetaResponse;
     }
 }

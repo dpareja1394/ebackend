@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EtiquetaRepository extends JpaRepository<Etiqueta, Integer> {
+    Boolean existsByNombre(String nombre);
 }
