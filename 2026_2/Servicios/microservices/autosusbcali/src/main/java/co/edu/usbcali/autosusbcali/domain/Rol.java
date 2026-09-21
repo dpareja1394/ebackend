@@ -26,10 +26,4 @@ public class Rol {
     @Column(name = "activo", nullable = false)
     private Boolean activo;
 
-    @ManyToMany
-    @JoinTable(
-            name = "roles_permisos",
-            joinColumns = @JoinColumn(name = "rol_id"),
-            inverseJoinColumns = @JoinColumn(name = "permiso_id"))
-    private Set<Permiso> permisos;
 }
