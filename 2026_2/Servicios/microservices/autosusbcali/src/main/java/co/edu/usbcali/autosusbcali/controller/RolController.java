@@ -1,6 +1,8 @@
 package co.edu.usbcali.autosusbcali.controller;
 
 import co.edu.usbcali.autosusbcali.domain.Rol;
+import co.edu.usbcali.autosusbcali.dto.response.ObtenerRolResponse;
+import co.edu.usbcali.autosusbcali.mapper.RolMapper;
 import co.edu.usbcali.autosusbcali.repository.RolRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,18 +19,18 @@ public class RolController {
     private final RolRepository rolRepository;
 
     @GetMapping
-    public List<Rol> obtenerTodos() {
-        return rolRepository.findAll();
+    public List<ObtenerRolResponse> obtenerTodos() {
+        return RolMapper.listaRolesAListaObtenerRolResponse(rolRepository.findAll());
     }
 
     @GetMapping("/activos")
-    public List<Rol> obtenerTodosActivos() {
-        return rolRepository.findByActivo(true);
+    public List<ObtenerRolResponse> obtenerTodosActivos() {
+        return RolMapper.listaRolesAListaObtenerRolResponse(rolRepository.findByActivo(true));
     }
 
     @GetMapping("/inactivos")
-    public List<Rol> obtenerTodosInactivos() {
-        return rolRepository.findByActivo(false);
+    public List<ObtenerRolResponse> obtenerTodosInactivos() {
+        return RolMapper.listaRolesAListaObtenerRolResponse(rolRepository.findByActivo(false));
     }
 
     @GetMapping("/por-nombre/{nombre}")
