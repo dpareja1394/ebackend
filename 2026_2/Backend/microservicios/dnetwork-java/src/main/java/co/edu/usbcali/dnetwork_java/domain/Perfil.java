@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDateTime;
 
@@ -40,6 +41,7 @@ public class Perfil {
     private String enlace;
 
     @Column(name = "visibilidad", nullable = false)
+    @ColumnTransformer(write = "?::visibilidad_perfil")
     private VisibilidadPerfil visibilidad;
 
     @Column(name = "created_at", nullable = false)

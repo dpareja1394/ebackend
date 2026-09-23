@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class Publicacion {
     private String contenido;
 
     @Column(name = "privacidad", nullable = false)
+    @ColumnTransformer(write = "?::privacidad_publicacion")
     private PrivacidadPublicacion privacidad;
 
     @Column(name = "created_at", nullable = false)

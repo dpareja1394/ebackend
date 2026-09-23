@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class Reaccion {
     private Usuario usuario;
 
     @Column(name = "tipo", nullable = false)
+    @ColumnTransformer(write = "?::tipo_reaccion")
     private TipoReaccion tipo;
 
     @Column(name = "created_at", nullable = false)

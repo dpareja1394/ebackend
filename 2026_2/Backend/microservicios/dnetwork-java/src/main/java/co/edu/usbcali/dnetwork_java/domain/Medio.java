@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class Medio {
     private Publicacion publicacion;
 
     @Column(name = "tipo", nullable = false)
+    @ColumnTransformer(write = "?::tipo_medio")
     private TipoMedio tipo;
 
     @Column(name = "url_original", nullable = false, length = 500)

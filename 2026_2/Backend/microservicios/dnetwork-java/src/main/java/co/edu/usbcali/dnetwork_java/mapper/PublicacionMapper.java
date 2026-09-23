@@ -32,7 +32,7 @@ public class PublicacionMapper {
     public static Publicacion crearPublicacionRequestAPublicacion(CrearPublicacionRequest publicacionRq) {
         Publicacion publicacion = Publicacion.builder()
                 .contenido(publicacionRq.contenido())
-                .privacidad(PrivacidadPublicacion.valueOf(publicacionRq.privacidadPublicacion()))
+                .privacidad(PrivacidadPublicacion.getPrivacidadPublicacion(publicacionRq.privacidadPublicacion()))
                 .build();
         return publicacion;
     }
