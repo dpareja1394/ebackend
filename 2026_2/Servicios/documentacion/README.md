@@ -6,6 +6,7 @@ Este directorio centraliza la documentación formal del proyecto de servicios ba
 
 - [Documentación técnica](./doc-tecnica-servicios.md)
 - [Onboarding del equipo](./doc-onboarding-equipo-servicios.md)
+- [Capa de Servicios: qué es y cómo se crea](./doc-capa-servicio.md)
 
 ## Referencias de trabajo
 

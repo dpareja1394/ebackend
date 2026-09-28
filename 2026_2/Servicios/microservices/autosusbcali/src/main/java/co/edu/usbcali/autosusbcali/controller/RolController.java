@@ -34,10 +34,11 @@ public class RolController {
     }
 
     @GetMapping("/por-nombre/{nombre}")
-    public ResponseEntity<Rol> obtenerPorNombre(@PathVariable String nombre) {
+    public ResponseEntity<ObtenerRolResponse> obtenerPorNombre(@PathVariable String nombre) {
         Optional<Rol> rolOptional = rolRepository.findByNombre(nombre);
         if (rolOptional.isPresent()) {
-            return new ResponseEntity<>(rolOptional.get(), HttpStatus.OK);
+            ObtenerRolResponse rolResponse = RolMapper.rolAObtenerRolResponse(rolOptional.get());
+            return new ResponseEntity<>(rolResponse, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
