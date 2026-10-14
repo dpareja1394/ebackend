@@ -4,6 +4,7 @@ import co.edu.usbcali.dnetwork_java.domain.Publicacion;
 import co.edu.usbcali.dnetwork_java.domain.Usuario;
 import co.edu.usbcali.dnetwork_java.domain.enums.PrivacidadPublicacion;
 import co.edu.usbcali.dnetwork_java.dto.request.CrearPublicacionRequest;
+import co.edu.usbcali.dnetwork_java.dto.request.ModificarPublicacionRequest;
 import co.edu.usbcali.dnetwork_java.dto.response.ObtenerPublicacionResponse;
 import co.edu.usbcali.dnetwork_java.mapper.PublicacionMapper;
 import co.edu.usbcali.dnetwork_java.repository.PublicacionRepository;
@@ -99,6 +100,18 @@ public class PublicacionServiceImpl implements PublicacionService {
 
         // Retornar Response
         return publicacionResponse;
+    }
+
+    // Implementar la lógica para modificar una publicación
+    @Override
+    public ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) throws Exception {
+        return null;
+    }
+
+    // Estudiantes generan la lógica para eliminar una publicación
+    @Override
+    public void eliminarPublicacion(Integer id) throws Exception {
+
     }
 
 
