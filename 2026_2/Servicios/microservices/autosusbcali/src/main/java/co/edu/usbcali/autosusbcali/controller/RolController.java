@@ -1,16 +1,16 @@
 package co.edu.usbcali.autosusbcali.controller;
 
-import co.edu.usbcali.autosusbcali.domain.Rol;
 import co.edu.usbcali.autosusbcali.dto.response.ObtenerRolResponse;
-import co.edu.usbcali.autosusbcali.mapper.RolMapper;
 import co.edu.usbcali.autosusbcali.service.RolService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/roles")
