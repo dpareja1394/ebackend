@@ -39,18 +39,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     @Transactional(readOnly = true)
     public ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id) throws Exception {
-        if (id == null) {
-            throw new Exception("El id no puede ser nulo");
-        }
-        if (id <= 0) {
-            throw new Exception("El valor del id no puede ser inferior o igual a cero para buscar");
-        }
-        Optional<Publicacion> publicacionOptional = publicacionRepository.findById(id);
-        if(publicacionOptional.isEmpty()) {
-            throw new Exception("No existe la publicación");
-        }
-
-        return PublicacionMapper.publicacionAObtenerPublicacionResponse(publicacionOptional.get());
+        return PublicacionMapper.publicacionAObtenerPublicacionResponse(obtenerPublicacion(id));
     }
 
     @Override
@@ -98,14 +87,6 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) throws Exception {
-        // Validar que el id de la publicación trae dato
-        if (id == null) {
-            throw new Exception("El id no puede ser nulo");
-        }
-        if (id <= 0) {
-            throw new Exception("El valor del id no puede ser inferior o igual a cero para modificar");
-        }
-
         // Validar los atributos del objeto modificarPublicacionRequest
         if (modificarPublicacionRequest == null) {
             throw new Exception("El objeto a modificar no puede ser nulo");
@@ -115,10 +96,7 @@ public class PublicacionServiceImpl implements PublicacionService {
             throw new Exception("El contenido de la publicación no puede ser nulo ni vacío");
         }
         PrivacidadPublicacion privacidad = validarPrivacidadPublicacion(modificarPublicacionRequest.privacidadPublicacion());
-
-        // Validar que existe la publicación por el id indicado
-        Publicacion publicacion = publicacionRepository.findById(id)
-                .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
+        Publicacion publicacion = obtenerPublicacion(id);
 
         // Set de la publicación con los atributos que llegaron
         publicacion.setContenido(modificarPublicacionRequest.contenido());
@@ -134,18 +112,8 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void eliminarPublicacion(Integer id) throws Exception {
-        // Validar que el id de la publicación trae dato
-        if (id == null) {
-            throw new Exception("El id no puede ser nulo");
-        }
-        if (id <= 0) {
-            throw new Exception("El valor del id no puede ser inferior o igual a cero para eliminar");
-        }
-
-        // Validar que existe la publicación por el id indicado
-        Publicacion publicacion = publicacionRepository.findById(id)
-                .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
-
+        validarId(id);
+        Publicacion publicacion = obtenerPublicacion(id);
         // Borrado físico
         publicacionRepository.delete(publicacion);
     }
@@ -161,6 +129,23 @@ public class PublicacionServiceImpl implements PublicacionService {
             throw new Exception("No se ha encontrado la privacidad-publicacion: " + privacidadPublicacion + ".");
         }
         return privacidad;
+    }
+
+    private Publicacion obtenerPublicacion(Integer id) throws Exception {
+        validarId(id);
+        // Validar que existe la publicación por el id indicado
+        return publicacionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
+    }
+
+    private void validarId(Integer id) throws Exception {
+        // Validar que el id de la publicación trae dato
+        if (id == null) {
+            throw new Exception("El id no puede ser nulo");
+        }
+        if (id <= 0) {
+            throw new Exception("El valor del id no puede ser inferior o igual a cero para eliminar");
+        }
     }
 
 }
