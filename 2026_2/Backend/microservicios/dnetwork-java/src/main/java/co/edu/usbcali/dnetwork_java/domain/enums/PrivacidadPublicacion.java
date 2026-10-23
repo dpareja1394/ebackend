@@ -3,6 +3,8 @@ package co.edu.usbcali.dnetwork_java.domain.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @AllArgsConstructor
 @Getter
 public enum PrivacidadPublicacion implements IValorDbEnum {
@@ -13,11 +15,10 @@ public enum PrivacidadPublicacion implements IValorDbEnum {
     private final String valorDb;
 
     public static PrivacidadPublicacion getPrivacidadPublicacion(String valorDb) {
-        for (PrivacidadPublicacion privacidadPublicacion : PrivacidadPublicacion.values()) {
-            if (privacidadPublicacion.getValorDb().equalsIgnoreCase(valorDb)) {
-                return privacidadPublicacion;
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(p -> p.valorDb.equalsIgnoreCase(valorDb))
+                .findFirst()
+                .orElse(null);
     }
+
 }

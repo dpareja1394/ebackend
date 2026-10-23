@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,22 +68,15 @@ public class PublicacionServiceImpl implements PublicacionService {
                 crearPublicacionRequest.contenido().isBlank()) {
             throw new Exception("El contenido de la publicación no puede ser nulo ni vacío");
         }
-        if (crearPublicacionRequest.privacidadPublicacion() == null ||
-                crearPublicacionRequest.privacidadPublicacion().isBlank()) {
-            throw new Exception("No ha llegado un valor para privacidad-publicacion");
-        }
+
+        // Validar que la privacidad exista en el Enum
+        validarPrivacidadPublicacion(crearPublicacionRequest.privacidadPublicacion());
 
         // Validar existencia del Autor en base de datos, tener en cuenta que el Autor es una llave foránea de Publicación
         Usuario autor = usuarioRepository
                 .findById(crearPublicacionRequest.autorId())
                 .orElseThrow(() ->
                         new Exception("No se ha encontrado el autor con el id: " + crearPublicacionRequest.autorId() + "."));
-
-        // Validar que la privacidad se encuentre en el Enum
-        if (Arrays.stream(PrivacidadPublicacion.values()).noneMatch(privacidad ->
-                privacidad.toString().equalsIgnoreCase(crearPublicacionRequest.privacidadPublicacion()))) {
-            throw new Exception("No se ha encontrado la privacidad-publicacion: " + crearPublicacionRequest.privacidadPublicacion() + ".");
-        }
 
         // Convertir desde el Request hacia el Entity
         Publicacion publicacion = PublicacionMapper.crearPublicacionRequestAPublicacion(crearPublicacionRequest);
@@ -104,15 +96,71 @@ public class PublicacionServiceImpl implements PublicacionService {
 
     // Implementar la lógica para modificar una publicación
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) throws Exception {
-        return null;
+        // Validar que el id de la publicación trae dato
+        if (id == null) {
+            throw new Exception("El id no puede ser nulo");
+        }
+        if (id <= 0) {
+            throw new Exception("El valor del id no puede ser inferior o igual a cero para modificar");
+        }
+
+        // Validar los atributos del objeto modificarPublicacionRequest
+        if (modificarPublicacionRequest == null) {
+            throw new Exception("El objeto a modificar no puede ser nulo");
+        }
+        if (modificarPublicacionRequest.contenido() == null ||
+                modificarPublicacionRequest.contenido().isBlank()) {
+            throw new Exception("El contenido de la publicación no puede ser nulo ni vacío");
+        }
+        PrivacidadPublicacion privacidad = validarPrivacidadPublicacion(modificarPublicacionRequest.privacidadPublicacion());
+
+        // Validar que existe la publicación por el id indicado
+        Publicacion publicacion = publicacionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
+
+        // Set de la publicación con los atributos que llegaron
+        publicacion.setContenido(modificarPublicacionRequest.contenido());
+        publicacion.setPrivacidad(privacidad);
+
+        publicacion = publicacionRepository.save(publicacion);
+
+        // Mapear la publicación modificada a el DTO de respuesta ObtenerPublicacionResponse
+        return PublicacionMapper.publicacionAObtenerPublicacionResponse(publicacion);
     }
 
-    // Estudiantes generan la lógica para eliminar una publicación
+    // Eliminación física de una publicación
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void eliminarPublicacion(Integer id) throws Exception {
+        // Validar que el id de la publicación trae dato
+        if (id == null) {
+            throw new Exception("El id no puede ser nulo");
+        }
+        if (id <= 0) {
+            throw new Exception("El valor del id no puede ser inferior o igual a cero para eliminar");
+        }
 
+        // Validar que existe la publicación por el id indicado
+        Publicacion publicacion = publicacionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
+
+        // Borrado físico
+        publicacionRepository.delete(publicacion);
     }
 
+
+    // Valida que el texto de privacidad llegue con dato y exista en el Enum, retorna el valor del Enum
+    private PrivacidadPublicacion validarPrivacidadPublicacion(String privacidadPublicacion) throws Exception {
+        if (privacidadPublicacion == null || privacidadPublicacion.isBlank()) {
+            throw new Exception("No ha llegado un valor para privacidad-publicacion");
+        }
+        PrivacidadPublicacion privacidad = PrivacidadPublicacion.getPrivacidadPublicacion(privacidadPublicacion);
+        if (privacidad == null) {
+            throw new Exception("No se ha encontrado la privacidad-publicacion: " + privacidadPublicacion + ".");
+        }
+        return privacidad;
+    }
 
 }
