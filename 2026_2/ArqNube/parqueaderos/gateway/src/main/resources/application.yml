@@ -1,0 +1,39 @@
+# Rutas según specs/001-gestion-parqueaderos/contracts/gateway-routes.md.
+# /internal/** no tiene ruta a propósito: la API interna nunca se expone (responde 404).
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: vehiculos
+              uri: ${VEHICULOS_URL:http://localhost:8082}
+              order: 1
+              predicates:
+                - Path=/api/v1/vehiculos,/api/v1/vehiculos/**
+            - id: parqueaderos
+              uri: ${PARQUEADEROS_URL:http://localhost:8081}
+              order: 2
+              predicates:
+                - Path=/api/v1/parqueaderos,/api/v1/parqueaderos/**,/api/v1/espacios/**
+          httpclient:
+            connect-timeout: 2000
+            response-timeout: 5s
+          globalcors:
+            cors-configurations:
+              '[/api/**]':
+                allowed-origins: ${FRONTEND_ORIGIN:http://localhost:4200}
+                allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+                allowed-headers: "*"
+                exposed-headers: X-Correlation-Id,Location
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

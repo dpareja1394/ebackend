@@ -1,0 +1,95 @@
+<div class="encabezado">
+  <h1>Vehículos</h1>
+  <a class="btn btn-primario" routerLink="nuevo" [queryParams]="parqueadero ? { parqueaderoId: parqueadero } : {}">
+    Registrar vehículo
+  </a>
+</div>
+
+<section class="tarjeta">
+  <form class="filtros" (ngSubmit)="cargar(0)">
+    <div class="campo">
+      <label for="f-placa">Placa (empieza por)</label>
+      <input id="f-placa" name="placa" [(ngModel)]="placa" placeholder="ABC" maxlength="12" autocomplete="off" />
+    </div>
+    <div class="campo">
+      <label for="f-parqueadero">Parqueadero</label>
+      <select id="f-parqueadero" name="parqueadero" [(ngModel)]="parqueadero" (ngModelChange)="cargar(0)">
+        <option value="">Todos</option>
+        @for (p of parqueaderos(); track p.id) {
+          <option [value]="p.id">{{ p.nombre }} ({{ p.ciudad }})</option>
+        }
+      </select>
+    </div>
+    <button type="submit" class="btn">Buscar</button>
+  </form>
+
+  @if (aviso(); as a) {
+    <p class="vacio">{{ a }}</p>
+  } @else if (pagina(); as p) {
+    @if (p.contenido.length === 0) {
+      <p class="vacio">No se encontraron vehículos.</p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>Placa</th>
+              <th>Tipo</th>
+              <th>Marca / color</th>
+              <th>Propietario</th>
+              <th>Parqueadero</th>
+              <th>Espacio</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (v of p.contenido; track v.id) {
+              <tr>
+                <td class="placa">{{ v.placa }}</td>
+                <td>{{ etiquetasTipo[v.tipo] }}</td>
+                <td>{{ v.marca ?? '—' }} · {{ v.color }}</td>
+                <td>
+                  {{ v.propietarioNombre }}
+                  <div class="secundario">{{ v.propietarioDocumento }}</div>
+                </td>
+                <td>
+                  <a [routerLink]="['/parqueaderos', v.parqueaderoId]">{{ nombres().get(v.parqueaderoId) ?? 'Ver' }}</a>
+                </td>
+                <td>
+                  @if (v.espacioCodigo) {
+                    <span class="chip chip-aviso">{{ v.espacioCodigo }}</span>
+                  } @else {
+                    <span class="secundario">Sin espacio</span>
+                  }
+                </td>
+                <td>
+                  @if (porEliminar() === v.id) {
+                    <div class="confirmacion">
+                      ¿Eliminar {{ v.placa }}?{{ v.espacioCodigo ? ' Se liberará el espacio ' + v.espacioCodigo + '.' : '' }}
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="eliminar(v)">Sí, eliminar</button>
+                      <button type="button" class="btn btn-sm" (click)="porEliminar.set(null)">Cancelar</button>
+                    </div>
+                  } @else {
+                    <div class="acciones">
+                      <a class="btn btn-sm" [routerLink]="[v.id, 'espacio']">Espacio / traslado</a>
+                      <a class="btn btn-sm" [routerLink]="[v.id, 'editar']">Editar</a>
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="porEliminar.set(v.id)">
+                        Eliminar
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginacion
+        [pagina]="p.pagina"
+        [totalPaginas]="p.totalPaginas"
+        [totalElementos]="p.totalElementos"
+        (cambio)="cargar($event)"
+      />
+    }
+  }
+</section>

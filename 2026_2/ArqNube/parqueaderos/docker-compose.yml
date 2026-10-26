@@ -1,0 +1,108 @@
+# Sistema de parqueaderos. Solo el gateway (8080) y el frontend (4200) publican puertos en el host:
+# los servicios y las bases solo son alcanzables dentro de la red de Docker (Principio II).
+# Para desarrollo (Swagger, acceso directo): docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  db-parqueaderos:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${PARQUEADEROS_DB_NAME}
+      POSTGRES_USER: ${PARQUEADEROS_DB_USER}
+      POSTGRES_PASSWORD: ${PARQUEADEROS_DB_PASSWORD}
+    volumes:
+      - db-parqueaderos-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  db-vehiculos:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${VEHICULOS_DB_NAME}
+      POSTGRES_USER: ${VEHICULOS_DB_USER}
+      POSTGRES_PASSWORD: ${VEHICULOS_DB_PASSWORD}
+    volumes:
+      - db-vehiculos-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  parqueaderos-service:
+    build: ./services/parqueaderos-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-parqueaderos:5432/${PARQUEADEROS_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${PARQUEADEROS_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${PARQUEADEROS_DB_PASSWORD}
+      VEHICULOS_URL: ${VEHICULOS_URL}
+    expose:
+      - "8081"
+    depends_on:
+      db-parqueaderos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+  vehiculos-service:
+    build: ./services/vehiculos-service
+    environment:
+      PORT: "8082"
+      DATABASE_URL: postgres://${VEHICULOS_DB_USER}:${VEHICULOS_DB_PASSWORD}@db-vehiculos:5432/${VEHICULOS_DB_NAME}?sslmode=disable
+      PARQUEADEROS_URL: ${PARQUEADEROS_URL}
+      PARQUEADEROS_TIMEOUT: ${PARQUEADEROS_TIMEOUT}
+    expose:
+      - "8082"
+    depends_on:
+      db-vehiculos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/health | grep -q UP"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+
+  gateway:
+    build: ./gateway
+    environment:
+      PARQUEADEROS_URL: ${PARQUEADEROS_URL}
+      VEHICULOS_URL: ${VEHICULOS_URL}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN}
+    ports:
+      - "8080:8080"
+    depends_on:
+      parqueaderos-service:
+        condition: service_healthy
+      vehiculos-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+  frontend:
+    build: ./frontend
+    environment:
+      GATEWAY_URL: ${GATEWAY_URL}
+    ports:
+      - "4200:80"
+    depends_on:
+      gateway:
+        condition: service_healthy
+
+volumes:
+  db-parqueaderos-data:
+  db-vehiculos-data:

@@ -1,0 +1,118 @@
+<section class="tarjeta">
+  <div class="encabezado">
+    <h2>Espacios</h2>
+  </div>
+
+  <form class="filtros nuevo" (ngSubmit)="crear()">
+    <div class="campo" [class.invalido]="erroresNuevo()['codigo']">
+      <label for="nuevo-codigo">Código</label>
+      <input id="nuevo-codigo" name="codigo" [(ngModel)]="nuevoCodigo" maxlength="20" placeholder="A-01" />
+      @if (erroresNuevo()['codigo']; as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+    <div class="campo">
+      <label for="nuevo-tipo">Tipo de vehículo</label>
+      <select id="nuevo-tipo" name="tipo" [(ngModel)]="nuevoTipo">
+        @for (t of tipos; track t) {
+          <option [value]="t">{{ etiquetasTipo[t] }}</option>
+        }
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primario">Agregar espacio</button>
+  </form>
+
+  <form class="filtros" (ngSubmit)="cargar(0)">
+    <div class="campo">
+      <label for="f-estado-esp">Estado</label>
+      <select id="f-estado-esp" name="estado" [(ngModel)]="filtroEstado" (ngModelChange)="cargar(0)">
+        <option value="">Todos</option>
+        @for (e of estados; track e) {
+          <option [value]="e">{{ etiquetasEstado[e] }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="f-tipo-esp">Tipo</label>
+      <select id="f-tipo-esp" name="tipo" [(ngModel)]="filtroTipo" (ngModelChange)="cargar(0)">
+        <option value="">Todos</option>
+        @for (t of tipos; track t) {
+          <option [value]="t">{{ etiquetasTipo[t] }}</option>
+        }
+      </select>
+    </div>
+  </form>
+
+  @if (pagina(); as p) {
+    @if (p.contenido.length === 0) {
+      <p class="vacio">No hay espacios con estos filtros.</p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of p.contenido; track e.id) {
+              <tr>
+                <td class="codigo">{{ e.codigo }}</td>
+                <td>{{ etiquetasTipo[e.tipoVehiculo] }}</td>
+                <td>
+                  <span
+                    class="chip"
+                    [class.chip-ok]="e.estado === 'DISPONIBLE'"
+                    [class.chip-aviso]="e.estado === 'OCUPADO'"
+                    [class.chip-mal]="e.estado === 'FUERA_DE_SERVICIO'"
+                    >{{ etiquetasEstado[e.estado] }}</span
+                  >
+                </td>
+                <td>
+                  @if (porEliminar() === e.id) {
+                    <div class="confirmacion">
+                      ¿Eliminar {{ e.codigo }}?
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="eliminar(e)">Sí, eliminar</button>
+                      <button type="button" class="btn btn-sm" (click)="porEliminar.set(null)">Cancelar</button>
+                    </div>
+                  } @else if (porLiberar() === e.id) {
+                    <div class="confirmacion">
+                      Solo para espacios que quedaron ocupados por error: el sistema verifica que ningún vehículo
+                      tenga asignado {{ e.codigo }} antes de liberarlo.
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="forzarLiberacion(e)">
+                        Forzar liberación
+                      </button>
+                      <button type="button" class="btn btn-sm" (click)="porLiberar.set(null)">Cancelar</button>
+                    </div>
+                  } @else if (e.estado === 'OCUPADO') {
+                    <div class="acciones">
+                      <button type="button" class="btn btn-sm" (click)="porLiberar.set(e.id)">Forzar liberación</button>
+                    </div>
+                  } @else {
+                    <div class="acciones">
+                      <button type="button" class="btn btn-sm" (click)="alternarServicio(e)">
+                        {{ e.estado === 'FUERA_DE_SERVICIO' ? 'Habilitar' : 'Poner fuera de servicio' }}
+                      </button>
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="porEliminar.set(e.id)">
+                        Eliminar
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginacion
+        [pagina]="p.pagina"
+        [totalPaginas]="p.totalPaginas"
+        [totalElementos]="p.totalElementos"
+        (cambio)="cargar($event)"
+      />
+    }
+  }
+</section>

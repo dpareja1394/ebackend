@@ -1,0 +1,80 @@
+<div class="encabezado">
+  <h1>{{ esEdicion() ? 'Editar parqueadero' : 'Nuevo parqueadero' }}</h1>
+</div>
+
+<form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <div class="formulario">
+    <div class="campo" [class.invalido]="error('nombre')">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" formControlName="nombre" maxlength="100" />
+      @if (error('nombre'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+
+    <div class="campo" [class.invalido]="error('ciudad')">
+      <label for="ciudad">Ciudad</label>
+      <input id="ciudad" formControlName="ciudad" maxlength="80" />
+      @if (error('ciudad'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+
+    <div class="campo" [class.invalido]="error('direccion')">
+      <label for="direccion">Dirección</label>
+      <input id="direccion" formControlName="direccion" maxlength="200" />
+      @if (error('direccion'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+
+    @if (esEdicion()) {
+      <div class="campo">
+        <label for="estado">Estado</label>
+        <select id="estado" formControlName="estado">
+          @for (e of estados; track e) {
+            <option [value]="e">{{ etiquetasEstado[e] }}</option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
+  <h2 class="titulo-horario">Horario de atención</h2>
+  <div class="formulario">
+    <div class="campo campo-check">
+      <input id="abierto24h" type="checkbox" formControlName="abierto24h" />
+      <label for="abierto24h">Abierto 24 horas</label>
+    </div>
+
+    @if (!abierto24h()) {
+      <div class="campo" [class.invalido]="error('horario') || error('horaApertura')">
+        <label for="horaApertura">Hora de apertura</label>
+        <input id="horaApertura" type="time" formControlName="horaApertura" />
+        @if (error('horaApertura'); as e) {
+          <span class="error-campo">{{ e }}</span>
+        }
+      </div>
+      <div class="campo" [class.invalido]="error('horario') || error('horaCierre')">
+        <label for="horaCierre">Hora de cierre</label>
+        <input id="horaCierre" type="time" formControlName="horaCierre" />
+        @if (error('horaCierre'); as e) {
+          <span class="error-campo">{{ e }}</span>
+        }
+        @if (cierraAlDiaSiguiente()) {
+          <span class="nota">Cierra al día siguiente</span>
+        }
+      </div>
+    }
+  </div>
+  @if (error('horario'); as e) {
+    <p class="error-campo">{{ e }}</p>
+  }
+
+  <div class="acciones pie">
+    <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+    <a class="btn" [routerLink]="esEdicion() ? ['/parqueaderos', id()] : ['/parqueaderos']">Cancelar</a>
+  </div>
+</form>

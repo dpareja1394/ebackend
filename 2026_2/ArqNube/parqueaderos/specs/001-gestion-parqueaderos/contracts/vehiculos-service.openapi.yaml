@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: vehiculos-service
+  version: 1.0.0
+  description: |
+    Vehículos que pertenecen a un parqueadero y su asignación a espacios.
+    Rutas /api/v1/** expuestas por el API Gateway; /internal/v1/** solo en la red interna.
+    Los esquemas Error, Pagina y TipoVehiculo son idénticos a los de parqueaderos-service.
+servers:
+  - url: http://localhost:8080
+    description: vía API Gateway
+  - url: http://vehiculos-service:8082
+    description: red interna
+tags:
+  - name: Vehiculos
+  - name: Asignacion
+  - name: Interno
+paths:
+  /api/v1/vehiculos:
+    get:
+      tags: [Vehiculos]
+      summary: Listar vehículos de un parqueadero o buscar por placa (FR-018)
+      description: Se debe enviar al menos uno de parqueaderoId o placa. La placa se normaliza antes de buscar.
+      parameters:
+        - { name: parqueaderoId, in: query, schema: { type: string, format: uuid } }
+        - { name: placa, in: query, description: 'Prefijo de placa (mín. 2 caracteres tras normalizar); devuelve placas que empiezan con el texto, ordenadas', schema: { type: string, minLength: 2 } }
+        - { name: pagina, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+        - { name: tamano, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: Página de vehículos
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagina'
+                  - type: object
+                    properties:
+                      contenido: { type: array, items: { $ref: '#/components/schemas/Vehiculo' } }
+        '400': { $ref: '#/components/responses/Error' }
+    post:
+      tags: [Vehiculos]
+      summary: Registrar vehículo en un parqueadero (FR-011, FR-012)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/VehiculoRequest'
+                - type: object
+                  required: [parqueaderoId]
+                  properties:
+                    parqueaderoId: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Registrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { description: Parqueadero inexistente, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { description: Parqueadero inactivo (FR-013a), content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/vehiculos/{vehiculoId}:
+    parameters:
+      - $ref: '#/components/parameters/VehiculoId'
+    get:
+      tags: [Vehiculos]
+      summary: Consultar vehículo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '404': { $ref: '#/components/responses/Error' }
+    put:
+      tags: [Vehiculos]
+      summary: Modificar datos del vehículo (no cambia parqueadero ni espacio; tipo no editable con espacio asignado)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VehiculoRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Vehiculos]
+      summary: Eliminar vehículo; libera su espacio si lo tiene (FR-017)
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/vehiculos/{vehiculoId}/traslado:
+    post:
+      tags: [Vehiculos]
+      summary: Trasladar vehículo a otro parqueadero activo; libera antes su espacio (FR-013, FR-013a)
+      parameters:
+        - $ref: '#/components/parameters/VehiculoId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [parqueaderoId]
+              properties:
+                parqueaderoId: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Trasladado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '404': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/vehiculos/{vehiculoId}/asignacion:
+    parameters:
+      - $ref: '#/components/parameters/VehiculoId'
+    post:
+      tags: [Asignacion]
+      summary: Asignar espacio (rechaza si ya tiene uno, FR-014, FR-015)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AsignacionRequest' }
+      responses:
+        '200':
+          description: Asignado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { description: 'Vehículo ya tiene espacio, o espacio ocupado/fuera de servicio', content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        '422': { description: 'Tipo incompatible, espacio de otro parqueadero o parqueadero inactivo', content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        '503': { $ref: '#/components/responses/Error' }
+    put:
+      tags: [Asignacion]
+      summary: Reasignar a otro espacio (ocupa el nuevo, luego libera el anterior, FR-016)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AsignacionRequest' }
+      responses:
+        '200':
+          description: Reasignado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Asignacion]
+      summary: Liberar espacio del vehículo (FR-016). Idempotente.
+      responses:
+        '200':
+          description: Liberado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehiculo' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+
+  # ---------- API interna ----------
+  /internal/v1/vehiculos/conteo:
+    get:
+      tags: [Interno]
+      summary: Cantidad de vehículos de un parqueadero (usado al eliminar parqueadero)
+      parameters:
+        - { name: parqueaderoId, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parqueaderoId: { type: string, format: uuid }
+                  cantidad: { type: integer, format: int64 }
+
+  /internal/v1/vehiculos/{vehiculoId}:
+    get:
+      tags: [Interno]
+      summary: Referencia mínima de un vehículo (usado por la liberación forzada de espacios)
+      parameters:
+        - $ref: '#/components/parameters/VehiculoId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string, format: uuid }
+                  placa: { type: string }
+                  espacioId: { type: string, format: uuid, nullable: true }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+
+components:
+  parameters:
+    VehiculoId: { name: vehiculoId, in: path, required: true, schema: { type: string, format: uuid } }
+  responses:
+    Error:
+      description: Error con formato estándar (ver parqueaderos-service.openapi.yaml#/components/schemas/Error)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    TipoVehiculo: { type: string, enum: [AUTOMOVIL, MOTOCICLETA, BICICLETA] }
+    VehiculoRequest:
+      type: object
+      required: [placa, tipo, color, propietarioNombre, propietarioDocumento]
+      properties:
+        placa: { type: string, minLength: 3, maxLength: 12, description: 'Se normaliza a mayúsculas sin espacios ni guiones; para bicicletas, código identificador' }
+        tipo: { $ref: '#/components/schemas/TipoVehiculo' }
+        marca: { type: string, maxLength: 50, description: 'Obligatoria salvo BICICLETA' }
+        color: { type: string, minLength: 1, maxLength: 30 }
+        propietarioNombre: { type: string, minLength: 3, maxLength: 100 }
+        propietarioDocumento: { type: string, minLength: 5, maxLength: 20 }
+    Vehiculo:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        placa: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoVehiculo' }
+        marca: { type: string, nullable: true }
+        color: { type: string }
+        propietarioNombre: { type: string }
+        propietarioDocumento: { type: string }
+        parqueaderoId: { type: string, format: uuid }
+        espacioId: { type: string, format: uuid, nullable: true }
+        espacioCodigo: { type: string, nullable: true }
+        creadoEn: { type: string, format: date-time }
+        actualizadoEn: { type: string, format: date-time }
+    AsignacionRequest:
+      type: object
+      required: [espacioId]
+      properties:
+        espacioId: { type: string, format: uuid }
+    Pagina:
+      type: object
+      properties:
+        pagina: { type: integer }
+        tamano: { type: integer }
+        totalElementos: { type: integer, format: int64 }
+        totalPaginas: { type: integer }
+    Error:
+      type: object
+      required: [codigo, mensaje, timestamp]
+      properties:
+        codigo:
+          type: string
+          enum: [VALIDACION, NO_ENCONTRADO, CONFLICTO, REGLA_NEGOCIO, SERVICIO_NO_DISPONIBLE, ERROR_INTERNO]
+        mensaje: { type: string }
+        detalles:
+          type: array
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              mensaje: { type: string }
+        correlationId: { type: string }
+        timestamp: { type: string, format: date-time }

@@ -1,0 +1,7 @@
+.git/
+Dockerfile
+.dockerignore
+*.log
+.env*
+*.test
+*.out

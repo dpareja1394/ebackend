@@ -1,0 +1,85 @@
+<div class="encabezado">
+  <h1>Parqueaderos</h1>
+  <a class="btn btn-primario" routerLink="nuevo">Nuevo parqueadero</a>
+</div>
+
+<section class="tarjeta">
+  <form class="filtros" (ngSubmit)="buscar()">
+    <div class="campo">
+      <label for="f-ciudad">Ciudad</label>
+      <input id="f-ciudad" name="ciudad" [(ngModel)]="ciudad" placeholder="Todas" />
+    </div>
+    <div class="campo">
+      <label for="f-estado">Estado</label>
+      <select id="f-estado" name="estado" [(ngModel)]="estado">
+        <option value="">Todos</option>
+        @for (e of estados; track e) {
+          <option [value]="e">{{ etiquetasEstado[e] }}</option>
+        }
+      </select>
+    </div>
+    <button type="submit" class="btn">Filtrar</button>
+  </form>
+
+  @if (pagina(); as p) {
+    @if (p.contenido.length === 0) {
+      <p class="vacio">No hay parqueaderos que coincidan con los filtros.</p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Ciudad</th>
+              <th>Horario</th>
+              <th>Estado</th>
+              <th class="num">Espacios</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (parq of p.contenido; track parq.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="parq.id">{{ parq.nombre }}</a>
+                  <div class="direccion">{{ parq.direccion }}</div>
+                </td>
+                <td>{{ parq.ciudad }}</td>
+                <td>{{ formatearHorario(parq) }}</td>
+                <td>
+                  <span class="chip" [class.chip-ok]="parq.estado === 'ACTIVO'">{{ etiquetasEstado[parq.estado] }}</span>
+                </td>
+                <td class="num">{{ parq.totalEspacios }}</td>
+                <td>
+                  @if (porEliminar() === parq.id) {
+                    <div class="confirmacion">
+                      ¿Eliminar "{{ parq.nombre }}"?
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="eliminar(parq)">Sí, eliminar</button>
+                      <button type="button" class="btn btn-sm" (click)="porEliminar.set(null)">Cancelar</button>
+                    </div>
+                  } @else {
+                    <div class="acciones">
+                      <a class="btn btn-sm" [routerLink]="parq.id">Ver</a>
+                      <a class="btn btn-sm" [routerLink]="[parq.id, 'editar']">Editar</a>
+                      <button type="button" class="btn btn-sm btn-peligro" (click)="porEliminar.set(parq.id)">
+                        Eliminar
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginacion
+        [pagina]="p.pagina"
+        [totalPaginas]="p.totalPaginas"
+        [totalElementos]="p.totalElementos"
+        (cambio)="cargar($event)"
+      />
+    }
+  } @else if (cargando()) {
+    <p class="vacio">Cargando…</p>
+  }
+</section>

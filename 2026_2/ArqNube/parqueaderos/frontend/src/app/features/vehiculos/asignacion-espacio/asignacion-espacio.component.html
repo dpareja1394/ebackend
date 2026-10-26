@@ -1,0 +1,95 @@
+@if (vehiculo(); as v) {
+  <div class="encabezado">
+    <div>
+      <a routerLink="/vehiculos" [queryParams]="{ parqueaderoId: v.parqueaderoId }">← Vehículos</a>
+      <h1>{{ v.placa }}</h1>
+    </div>
+    <a class="btn" [routerLink]="['/vehiculos', v.id, 'editar']">Editar datos</a>
+  </div>
+
+  <section class="tarjeta">
+    <dl class="datos">
+      <dt>Tipo</dt>
+      <dd>{{ etiquetasTipo[v.tipo] }} · {{ v.marca ?? 'Sin marca' }} · {{ v.color }}</dd>
+      <dt>Propietario</dt>
+      <dd>{{ v.propietarioNombre }} ({{ v.propietarioDocumento }})</dd>
+      <dt>Parqueadero</dt>
+      <dd>
+        @if (parqueadero(); as p) {
+          <a [routerLink]="['/parqueaderos', p.id]">{{ p.nombre }}</a>
+          @if (p.estado === 'INACTIVO') {
+            <span class="chip">Inactivo</span>
+            <span class="nota">No admite asignaciones nuevas.</span>
+          }
+        }
+      </dd>
+      <dt>Espacio</dt>
+      <dd>
+        @if (v.espacioCodigo) {
+          <span class="chip chip-aviso">{{ v.espacioCodigo }}</span>
+          <button type="button" class="btn btn-sm" [disabled]="ocupado()" (click)="liberar()">Liberar espacio</button>
+        } @else {
+          Sin espacio asignado
+        }
+      </dd>
+    </dl>
+  </section>
+
+  <section class="tarjeta">
+    <h2>{{ v.espacioId ? 'Mover a otro espacio' : 'Asignar espacio' }}</h2>
+    <p class="nota">Espacios disponibles para {{ etiquetasTipo[v.tipo].toLowerCase() }} en este parqueadero.</p>
+    @if (disponibles(); as p) {
+      @if (p.contenido.length === 0) {
+        <p class="vacio">No hay espacios disponibles para este tipo de vehículo.</p>
+      } @else {
+        <div class="tabla-contenedor">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of p.contenido; track e.id) {
+                <tr>
+                  <td>{{ e.codigo }}</td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-primario" [disabled]="ocupado()" (click)="ocupar(e)">
+                      {{ v.espacioId ? 'Mover aquí' : 'Asignar' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-paginacion
+          [pagina]="p.pagina"
+          [totalPaginas]="p.totalPaginas"
+          [totalElementos]="p.totalElementos"
+          (cambio)="cargarDisponibles($event)"
+        />
+      }
+    }
+  </section>
+
+  <section class="tarjeta">
+    <h2>Trasladar a otro parqueadero</h2>
+    <form class="filtros" (ngSubmit)="trasladar()">
+      <div class="campo">
+        <label for="destino">Parqueadero destino</label>
+        <select id="destino" name="destino" [(ngModel)]="destino">
+          <option value="" disabled>Seleccione…</option>
+          @for (p of destinos(); track p.id) {
+            <option [value]="p.id">{{ p.nombre }} ({{ p.ciudad }})</option>
+          }
+        </select>
+      </div>
+      <button type="submit" class="btn" [disabled]="!destino || ocupado()">Trasladar</button>
+    </form>
+    @if (v.espacioCodigo) {
+      <p class="nota">Al trasladarlo se liberará el espacio {{ v.espacioCodigo }}.</p>
+    }
+  </section>
+}

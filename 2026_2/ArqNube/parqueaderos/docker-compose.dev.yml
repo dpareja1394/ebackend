@@ -1,0 +1,17 @@
+# Solo desarrollo: publica los servicios y las bases en el host (Swagger, clientes SQL).
+# Uso: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+# No se llama docker-compose.override.yml a propósito: Compose cargaría ese nombre automáticamente.
+
+services:
+  parqueaderos-service:
+    ports:
+      - "8081:8081"
+  vehiculos-service:
+    ports:
+      - "8082:8082"
+  db-parqueaderos:
+    ports:
+      - "5433:5432"
+  db-vehiculos:
+    ports:
+      - "5434:5432"

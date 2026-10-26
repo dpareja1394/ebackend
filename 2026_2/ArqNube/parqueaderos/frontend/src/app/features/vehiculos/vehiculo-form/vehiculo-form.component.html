@@ -1,0 +1,84 @@
+<div class="encabezado">
+  <h1>{{ esEdicion() ? 'Editar vehículo' : 'Registrar vehículo' }}</h1>
+</div>
+
+<form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <div class="formulario">
+    @if (!esEdicion()) {
+      <div class="campo" [class.invalido]="error('parqueaderoId')">
+        <label for="parqueaderoId">Parqueadero</label>
+        <select id="parqueaderoId" formControlName="parqueaderoId">
+          <option value="" disabled>Seleccione…</option>
+          @for (p of parqueaderos(); track p.id) {
+            <option [value]="p.id">{{ p.nombre }} ({{ p.ciudad }})</option>
+          }
+        </select>
+        @if (error('parqueaderoId'); as e) {
+          <span class="error-campo">{{ e }}</span>
+        }
+        <span class="nota">Solo aparecen parqueaderos activos.</span>
+      </div>
+    }
+
+    <div class="campo" [class.invalido]="error('placa')">
+      <label for="placa">{{ tipo() === 'BICICLETA' ? 'Placa o código' : 'Placa' }}</label>
+      <input id="placa" formControlName="placa" maxlength="12" autocomplete="off" placeholder="ABC123" />
+      @if (error('placa'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="tipo">Tipo</label>
+      <select id="tipo" formControlName="tipo">
+        @for (t of tipos; track t) {
+          <option [value]="t">{{ etiquetasTipo[t] }}</option>
+        }
+      </select>
+      @if (vehiculo()?.espacioCodigo; as codigo) {
+        <span class="nota">No se puede cambiar: el vehículo ocupa el espacio {{ codigo }}.</span>
+      }
+    </div>
+
+    <div class="campo" [class.invalido]="error('marca')">
+      <label for="marca">Marca{{ tipo() === 'BICICLETA' ? ' (opcional)' : '' }}</label>
+      <input id="marca" formControlName="marca" maxlength="50" />
+      @if (error('marca'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+
+    <div class="campo" [class.invalido]="error('color')">
+      <label for="color">Color</label>
+      <input id="color" formControlName="color" maxlength="30" />
+      @if (error('color'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+  </div>
+
+  <h2 class="titulo-horario">Propietario</h2>
+  <div class="formulario">
+    <div class="campo" [class.invalido]="error('propietarioNombre')">
+      <label for="propietarioNombre">Nombre</label>
+      <input id="propietarioNombre" formControlName="propietarioNombre" maxlength="100" />
+      @if (error('propietarioNombre'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+    <div class="campo" [class.invalido]="error('propietarioDocumento')">
+      <label for="propietarioDocumento">Documento</label>
+      <input id="propietarioDocumento" formControlName="propietarioDocumento" maxlength="20" />
+      @if (error('propietarioDocumento'); as e) {
+        <span class="error-campo">{{ e }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="acciones pie">
+    <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+    <a class="btn" routerLink="/vehiculos">Cancelar</a>
+  </div>
+</form>

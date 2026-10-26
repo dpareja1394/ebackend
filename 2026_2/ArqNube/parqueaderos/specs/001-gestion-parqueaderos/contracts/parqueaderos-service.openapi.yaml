@@ -1,0 +1,376 @@
+openapi: 3.0.3
+info:
+  title: parqueaderos-service
+  version: 1.0.0
+  description: |
+    Parqueaderos y espacios. Rutas /api/v1/** expuestas por el API Gateway.
+    Rutas /internal/v1/** solo accesibles dentro de la red de contenedores (no enrutadas por el gateway).
+servers:
+  - url: http://localhost:8080
+    description: vía API Gateway
+  - url: http://parqueaderos-service:8081
+    description: red interna
+tags:
+  - name: Parqueaderos
+  - name: Espacios
+  - name: Interno
+paths:
+  /api/v1/parqueaderos:
+    get:
+      tags: [Parqueaderos]
+      summary: Listar parqueaderos (FR-001, FR-004)
+      parameters:
+        - { name: ciudad, in: query, schema: { type: string } }
+        - { name: estado, in: query, schema: { $ref: '#/components/schemas/EstadoParqueadero' } }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/Tamano'
+      responses:
+        '200':
+          description: Página de parqueaderos
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagina'
+                  - type: object
+                    properties:
+                      contenido: { type: array, items: { $ref: '#/components/schemas/Parqueadero' } }
+    post:
+      tags: [Parqueaderos]
+      summary: Crear parqueadero
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ParqueaderoRequest' }
+      responses:
+        '201':
+          description: Creado
+          headers:
+            Location: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Parqueadero' }
+        '400': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /api/v1/parqueaderos/{parqueaderoId}:
+    parameters:
+      - $ref: '#/components/parameters/ParqueaderoId'
+    get:
+      tags: [Parqueaderos]
+      summary: Consultar parqueadero
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Parqueadero' }
+        '404': { $ref: '#/components/responses/Error' }
+    put:
+      tags: [Parqueaderos]
+      summary: Modificar parqueadero (incluye activar/inactivar vía campo estado)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ParqueaderoRequest'
+                - type: object
+                  required: [estado]
+                  properties:
+                    estado: { $ref: '#/components/schemas/EstadoParqueadero' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Parqueadero' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Parqueaderos]
+      summary: Eliminar parqueadero (rechaza si tiene espacios o vehículos, FR-003)
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/parqueaderos/{parqueaderoId}/resumen:
+    get:
+      tags: [Parqueaderos]
+      summary: Resumen de disponibilidad por tipo de vehículo (FR-009)
+      parameters:
+        - $ref: '#/components/parameters/ParqueaderoId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Resumen' }
+        '404': { $ref: '#/components/responses/Error' }
+  /api/v1/parqueaderos/{parqueaderoId}/espacios:
+    parameters:
+      - $ref: '#/components/parameters/ParqueaderoId'
+    get:
+      tags: [Espacios]
+      summary: Listar espacios del parqueadero
+      parameters:
+        - { name: estado, in: query, schema: { $ref: '#/components/schemas/EstadoEspacio' } }
+        - { name: tipoVehiculo, in: query, schema: { $ref: '#/components/schemas/TipoVehiculo' } }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/Tamano'
+      responses:
+        '200':
+          description: Página de espacios
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagina'
+                  - type: object
+                    properties:
+                      contenido: { type: array, items: { $ref: '#/components/schemas/Espacio' } }
+        '404': { $ref: '#/components/responses/Error' }
+    post:
+      tags: [Espacios]
+      summary: Crear espacio (FR-005, FR-006)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EspacioRequest' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Espacio' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /api/v1/espacios/{espacioId}:
+    parameters:
+      - $ref: '#/components/parameters/EspacioId'
+    get:
+      tags: [Espacios]
+      summary: Consultar espacio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Espacio' }
+        '404': { $ref: '#/components/responses/Error' }
+    put:
+      tags: [Espacios]
+      summary: Modificar espacio. El estado solo admite DISPONIBLE o FUERA_DE_SERVICIO (FR-007)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/EspacioRequest'
+                - type: object
+                  required: [estado]
+                  properties:
+                    estado:
+                      type: string
+                      enum: [DISPONIBLE, FUERA_DE_SERVICIO]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Espacio' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Espacios]
+      summary: Eliminar espacio (rechaza si está ocupado, FR-008)
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /api/v1/espacios/{espacioId}/ocupacion:
+    delete:
+      tags: [Espacios]
+      summary: Liberación forzada de un espacio huérfano
+      description: |
+        Libera un espacio OCUPADO solo si el vehículo registrado en él ya no existe o ya no
+        referencia este espacio (fallo parcial entre servicios). Verifica con vehiculos-service
+        antes de liberar. Si el espacio no está ocupado, lo devuelve sin cambios.
+      parameters:
+        - $ref: '#/components/parameters/EspacioId'
+      responses:
+        '200':
+          description: Liberado (o no estaba ocupado)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Espacio' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409':
+          description: El espacio sigue asignado a un vehículo; debe liberarse desde el vehículo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+
+  # ---------- API interna (no enrutada por el gateway) ----------
+  /internal/v1/parqueaderos/{parqueaderoId}:
+    get:
+      tags: [Interno]
+      summary: Verificar existencia/estado de un parqueadero (usado por vehiculos-service)
+      parameters:
+        - $ref: '#/components/parameters/ParqueaderoId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Parqueadero' }
+        '404': { $ref: '#/components/responses/Error' }
+  /internal/v1/espacios/{espacioId}/ocupacion:
+    parameters:
+      - $ref: '#/components/parameters/EspacioId'
+    post:
+      tags: [Interno]
+      summary: Ocupar espacio de forma atómica (DISPONIBLE → OCUPADO)
+      description: |
+        Valida que el espacio pertenezca a parqueaderoId, que el parqueadero esté ACTIVO,
+        que tipoVehiculo coincida y que el estado sea DISPONIBLE. Idempotente si el espacio
+        ya está ocupado por el mismo vehiculoId.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OcupacionRequest' }
+      responses:
+        '200':
+          description: Ocupado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Espacio' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Interno]
+      summary: Liberar espacio (OCUPADO → DISPONIBLE). Idempotente.
+      parameters:
+        - { name: vehiculoId, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '204': { description: Liberado (o ya estaba libre) }
+        '404': { $ref: '#/components/responses/Error' }
+        '409':
+          description: El espacio está ocupado por otro vehículo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+components:
+  parameters:
+    ParqueaderoId: { name: parqueaderoId, in: path, required: true, schema: { type: string, format: uuid } }
+    EspacioId: { name: espacioId, in: path, required: true, schema: { type: string, format: uuid } }
+    Pagina: { name: pagina, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+    Tamano: { name: tamano, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+  responses:
+    Error:
+      description: Error con formato estándar
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    EstadoParqueadero: { type: string, enum: [ACTIVO, INACTIVO] }
+    EstadoEspacio: { type: string, enum: [DISPONIBLE, OCUPADO, FUERA_DE_SERVICIO] }
+    TipoVehiculo: { type: string, enum: [AUTOMOVIL, MOTOCICLETA, BICICLETA] }
+    ParqueaderoRequest:
+      type: object
+      required: [nombre, direccion, ciudad, abierto24h]
+      properties:
+        nombre: { type: string, minLength: 3, maxLength: 100 }
+        direccion: { type: string, minLength: 5, maxLength: 200 }
+        ciudad: { type: string, minLength: 2, maxLength: 80 }
+        abierto24h: { type: boolean }
+        horaApertura: { type: string, pattern: '^([01]\d|2[0-3]):[0-5]\d$', description: 'Obligatoria si abierto24h=false' }
+        horaCierre: { type: string, pattern: '^([01]\d|2[0-3]):[0-5]\d$', description: 'Obligatoria si abierto24h=false; distinta de horaApertura; si es menor, cierra al día siguiente' }
+    Parqueadero:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        nombre: { type: string }
+        direccion: { type: string }
+        ciudad: { type: string }
+        abierto24h: { type: boolean }
+        horaApertura: { type: string, nullable: true }
+        horaCierre: { type: string, nullable: true }
+        estado: { $ref: '#/components/schemas/EstadoParqueadero' }
+        totalEspacios: { type: integer }
+        creadoEn: { type: string, format: date-time }
+        actualizadoEn: { type: string, format: date-time }
+    EspacioRequest:
+      type: object
+      required: [codigo, tipoVehiculo]
+      properties:
+        codigo: { type: string, minLength: 1, maxLength: 20 }
+        tipoVehiculo: { $ref: '#/components/schemas/TipoVehiculo' }
+    Espacio:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        parqueaderoId: { type: string, format: uuid }
+        codigo: { type: string }
+        tipoVehiculo: { $ref: '#/components/schemas/TipoVehiculo' }
+        estado: { $ref: '#/components/schemas/EstadoEspacio' }
+        vehiculoId: { type: string, format: uuid, nullable: true }
+    ConteoEspacios:
+      type: object
+      properties:
+        total: { type: integer }
+        disponibles: { type: integer }
+        ocupados: { type: integer }
+        fueraDeServicio: { type: integer }
+    Resumen:
+      type: object
+      properties:
+        parqueaderoId: { type: string, format: uuid }
+        general: { $ref: '#/components/schemas/ConteoEspacios' }
+        porTipo:
+          type: object
+          description: Clave = TipoVehiculo
+          additionalProperties: { $ref: '#/components/schemas/ConteoEspacios' }
+    OcupacionRequest:
+      type: object
+      required: [vehiculoId, parqueaderoId, tipoVehiculo]
+      properties:
+        vehiculoId: { type: string, format: uuid }
+        parqueaderoId: { type: string, format: uuid }
+        tipoVehiculo: { $ref: '#/components/schemas/TipoVehiculo' }
+    Pagina:
+      type: object
+      properties:
+        pagina: { type: integer }
+        tamano: { type: integer }
+        totalElementos: { type: integer, format: int64 }
+        totalPaginas: { type: integer }
+    Error:
+      type: object
+      required: [codigo, mensaje, timestamp]
+      properties:
+        codigo:
+          type: string
+          enum: [VALIDACION, NO_ENCONTRADO, CONFLICTO, REGLA_NEGOCIO, SERVICIO_NO_DISPONIBLE, ERROR_INTERNO]
+        mensaje: { type: string }
+        detalles:
+          type: array
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              mensaje: { type: string }
+        correlationId: { type: string }
+        timestamp: { type: string, format: date-time }

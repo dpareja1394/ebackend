@@ -1,0 +1,31 @@
+@if (parqueadero(); as p) {
+  <div class="encabezado">
+    <div>
+      <a routerLink="/parqueaderos">← Parqueaderos</a>
+      <h1>{{ p.nombre }}</h1>
+    </div>
+    <a class="btn" [routerLink]="['/parqueaderos', p.id, 'editar']">Editar</a>
+  </div>
+
+  <section class="tarjeta">
+    <dl class="datos">
+      <dt>Dirección</dt>
+      <dd>{{ p.direccion }}, {{ p.ciudad }}</dd>
+      <dt>Horario</dt>
+      <dd>{{ formatearHorario(p) }}</dd>
+      <dt>Estado</dt>
+      <dd>
+        <span class="chip" [class.chip-ok]="p.estado === 'ACTIVO'">{{ etiquetasEstado[p.estado] }}</span>
+        @if (p.estado === 'INACTIVO') {
+          <span class="nota">No admite nuevos vehículos ni asignación de espacios.</span>
+        }
+      </dd>
+      <dt>Espacios</dt>
+      <dd>{{ p.totalEspacios }}</dd>
+    </dl>
+  </section>
+
+  <app-resumen-espacios [parqueaderoId]="p.id" />
+  <app-espacios-panel [parqueaderoId]="p.id" (cambio)="alCambiarEspacios()" />
+  <app-vehiculos-parqueadero [parqueaderoId]="p.id" [activo]="p.estado === 'ACTIVO'" />
+}

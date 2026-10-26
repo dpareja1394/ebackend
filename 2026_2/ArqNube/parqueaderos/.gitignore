@@ -1,0 +1,35 @@
+# Java / Maven
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+build/
+.gradle/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Go
+*.exe
+*.test
+*.out
+vendor/
+/services/vehiculos-service/server
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# IDE / SO
+*.iml
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+*.log
