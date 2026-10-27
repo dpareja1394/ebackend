@@ -1,21 +1,24 @@
 # Dnetwork Java
 
-Microservicio backend desarrollado en Java con Spring Boot para la plataforma DNetwork. El proyecto está estructurado como una API REST con acceso a base de datos PostgreSQL y mapeo ORM con JPA/Hibernate.
+Microservicio backend desarrollado en Java con Spring Boot para la plataforma DNetwork. El proyecto está estructurado como una API REST con acceso a base de datos PostgreSQL, mapeo ORM con JPA/Hibernate y documentación interactiva de la API con Swagger (OpenAPI).
 
 ## Estado del proyecto
 
-Actualmente el servicio presenta una base funcional de estructura y dominio:
+Actualmente el servicio cuenta con:
 
-- Configuración inicial de Spring Boot 4.1.0
+- Configuración de Spring Boot 4.1.0
 - Dependencias para Web MVC y JPA
 - Soporte para PostgreSQL
 - Entidades JPA para el dominio principal de la red social
+- Enums de dominio persistidos mediante converters JPA
 - Repositorios de Spring Data
-- Controladores REST básicos para usuarios y etiquetas
-- Mapper y DTOs para respuesta de datos
-- Pruebas iniciales de arranque de la aplicación
-
-Se observa que el proyecto está en etapa de base arquitectónica / desarrollo inicial, con varias entidades del dominio ya modeladas y endpoints básicos creados.
+- Capa de servicios con validaciones de negocio y manejo transaccional
+- CRUD completo de publicaciones (crear, consultar, modificar y eliminar)
+- Consulta y creación de etiquetas
+- Consulta de usuarios
+- Mappers y DTOs (records) para solicitudes y respuestas
+- Documentación de la API con Swagger UI (springdoc-openapi)
+- Prueba inicial de arranque de la aplicación
 
 ## Stack tecnológico
 
@@ -26,8 +29,9 @@ Se observa que el proyecto está en etapa de base arquitectónica / desarrollo i
 - Spring Data JPA
 - PostgreSQL
 - Lombok
+- springdoc-openapi 3.1.1 (Swagger UI)
 
-## Estructura validada del proyecto
+## Estructura del proyecto
 
 ```text
 dnetwork-java/
@@ -40,6 +44,7 @@ dnetwork-java/
 │   │   │   └── co/edu/usbcali/dnetwork_java/
 │   │   │       ├── controller/
 │   │   │       │   ├── EtiquetaController.java
+│   │   │       │   ├── PublicacionController.java
 │   │   │       │   └── UsuarioController.java
 │   │   │       ├── domain/
 │   │   │       │   ├── ActividadHistorial.java
@@ -55,23 +60,36 @@ dnetwork-java/
 │   │   │       │   ├── Reaccion.java
 │   │   │       │   ├── Relacion.java
 │   │   │       │   ├── Usuario.java
-│   │   │       │   └── converter/
-│   │   │       │       ├── EstadoDenunciaConverter.java
-│   │   │       │       ├── EstadoRelacionConverter.java
-│   │   │       │       ├── PrivacidadPublicacionConverter.java
-│   │   │       │       ├── TipoMedioConverter.java
-│   │   │       │       ├── TipoNotificacionConverter.java
-│   │   │       │       ├── TipoReaccionConverter.java
-│   │   │       │       ├── ValorDbEnumConverter.java
-│   │   │       │       └── VisibilidadPerfilConverter.java
+│   │   │       │   ├── converter/
+│   │   │       │   │   ├── EstadoDenunciaConverter.java
+│   │   │       │   │   ├── EstadoRelacionConverter.java
+│   │   │       │   │   ├── PrivacidadPublicacionConverter.java
+│   │   │       │   │   ├── TipoMedioConverter.java
+│   │   │       │   │   ├── TipoNotificacionConverter.java
+│   │   │       │   │   ├── TipoReaccionConverter.java
+│   │   │       │   │   ├── ValorDbEnumConverter.java
+│   │   │       │   │   └── VisibilidadPerfilConverter.java
+│   │   │       │   └── enums/
+│   │   │       │       ├── EstadoDenuncia.java
+│   │   │       │       ├── EstadoRelacion.java
+│   │   │       │       ├── IValorDbEnum.java
+│   │   │       │       ├── PrivacidadPublicacion.java
+│   │   │       │       ├── TipoMedio.java
+│   │   │       │       ├── TipoNotificacion.java
+│   │   │       │       ├── TipoReaccion.java
+│   │   │       │       └── VisibilidadPerfil.java
 │   │   │       ├── dto/
 │   │   │       │   ├── request/
-│   │   │       │   │   └── CrearEtiquetaRequest.java
+│   │   │       │   │   ├── CrearEtiquetaRequest.java
+│   │   │       │   │   ├── CrearPublicacionRequest.java
+│   │   │       │   │   └── ModificarPublicacionRequest.java
 │   │   │       │   └── response/
 │   │   │       │       ├── ObtenerEtiquetaResponse.java
+│   │   │       │       ├── ObtenerPublicacionResponse.java
 │   │   │       │       └── ObtenerUsuarioResponse.java
 │   │   │       ├── mapper/
 │   │   │       │   ├── EtiquetaMapper.java
+│   │   │       │   ├── PublicacionMapper.java
 │   │   │       │   └── UsuarioMapper.java
 │   │   │       ├── repository/
 │   │   │       │   ├── ActividadHistorialRepository.java
@@ -89,7 +107,9 @@ dnetwork-java/
 │   │   │       │   └── UsuarioRepository.java
 │   │   │       ├── service/
 │   │   │       │   ├── EtiquetaService.java
-│   │   │       │   └── EtiquetaServiceImpl.java
+│   │   │       │   ├── EtiquetaServiceImpl.java
+│   │   │       │   ├── PublicacionService.java
+│   │   │       │   └── PublicacionServiceImpl.java
 │   │   │       └── DnetworkJavaApplication.java
 │   │   └── resources/
 │   │       └── application.properties
@@ -105,14 +125,26 @@ dnetwork-java/
 └── README.md
 ```
 
-## Dominio identificado
+## Arquitectura por capas
 
-El proyecto modela conceptos propios de una red social o plataforma de contenidos, incluyendo:
+- `controller` → endpoints REST
+- `service` → lógica de negocio, validaciones y transacciones (interfaz + implementación)
+- `repository` → acceso a datos con Spring Data JPA
+- `domain` → entidades del negocio
+- `domain/enums` → enums del dominio; implementan `IValorDbEnum`, que expone el valor (`valorDb`) almacenado en base de datos
+- `domain/converter` → converters JPA que traducen cada enum a su valor en base de datos; heredan de la clase genérica `ValorDbEnumConverter`
+- `dto` → contratos de entrada (`request`) y salida (`response`), implementados como `record`
+- `mapper` → conversión entre entidades y DTOs
+- `resources` → configuración de la app
+
+## Dominio
+
+El proyecto modela una red social o plataforma de contenidos generado por usuarios, con las siguientes entidades:
 
 - Usuarios
 - Perfiles
 - Etiquetas
-- Publicaciones
+- Publicaciones y su relación con etiquetas
 - Comentarios
 - Reacciones
 - Relaciones entre usuarios
@@ -122,25 +154,107 @@ El proyecto modela conceptos propios de una red social o plataforma de contenido
 - Actividad de historial
 - Medios asociados a publicaciones
 
-Esto indica que la aplicación está orientada a un backend de una red social con lógica de interacción y contenido generado por usuarios.
+### Enums del dominio
 
-## Endpoints iniciales
+| Enum | Uso |
+|------|-----|
+| `PrivacidadPublicacion` | Privacidad de una publicación: `publico`, `seguidores`, `privado` |
+| `VisibilidadPerfil` | Visibilidad del perfil de un usuario |
+| `EstadoRelacion` | Estado de una relación entre usuarios |
+| `EstadoDenuncia` | Estado de una denuncia |
+| `TipoReaccion` | Tipo de reacción a una publicación |
+| `TipoMedio` | Tipo de medio asociado a una publicación |
+| `TipoNotificacion` | Tipo de notificación |
 
-Se detectan controladores con endpoints básicos:
+## Documentación de la API (Swagger)
+
+El proyecto incluye `springdoc-openapi-starter-webmvc-ui`, que genera automáticamente la documentación OpenAPI a partir de los controladores. Con la aplicación en ejecución (puerto por defecto `8080`):
+
+- Swagger UI: <http://localhost:8080/swagger-ui.html>
+- Especificación OpenAPI (JSON): <http://localhost:8080/v3/api-docs>
+
+Desde Swagger UI se pueden consultar y probar todos los endpoints descritos a continuación.
+
+## Endpoints
 
 ### `/etiquetas`
 
-- `GET /etiquetas/ping` → respuesta de prueba
-- `GET /etiquetas/validar-estado` → validación de estado del servicio
-- `GET /etiquetas/obtener-etiquetas` → lista de etiquetas
-- `GET /etiquetas/{id}` → obtiene una etiqueta por id
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `GET` | `/etiquetas/ping` | Respuesta de prueba (`pong`) |
+| `GET` | `/etiquetas/validar-estado` | Validación de estado del servicio |
+| `GET` | `/etiquetas/obtener-etiquetas` | Lista de etiquetas |
+| `GET` | `/etiquetas/{id}` | Obtiene una etiqueta por id |
+| `POST` | `/etiquetas/crear` | Crea una etiqueta (responde `201 Created`) |
+
+Ejemplo de cuerpo para crear una etiqueta:
+
+```json
+{
+  "nombre": "tecnologia"
+}
+```
+
+Validaciones: el nombre no puede ser nulo ni vacío y no puede existir previamente.
+
+### `/publicaciones`
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `GET` | `/publicaciones` | Lista de publicaciones |
+| `GET` | `/publicaciones/{id}` | Obtiene una publicación por id |
+| `POST` | `/publicaciones/crear` | Crea una publicación (responde `201 Created`) |
+| `PUT` | `/publicaciones/modificar/{id}` | Modifica el contenido y la privacidad de una publicación |
+| `DELETE` | `/publicaciones/eliminar/{id}` | Elimina físicamente una publicación (responde `204 No Content`) |
+
+Ejemplo de cuerpo para crear una publicación:
+
+```json
+{
+  "autor_id": 1,
+  "contenido": "Mi primera publicación",
+  "privacidad_publicacion": "publico"
+}
+```
+
+Ejemplo de cuerpo para modificar una publicación:
+
+```json
+{
+  "contenido": "Contenido actualizado",
+  "privacidad_publicacion": "seguidores"
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+  "id": 1,
+  "autor_username": "usuario1",
+  "autor_id": 1,
+  "contenido": "Mi primera publicación",
+  "privacidad_publicacion": "publico",
+  "created_at": "2026-10-27T10:00:00",
+  "updated_at": "2026-10-27T10:00:00"
+}
+```
+
+Validaciones:
+
+- El id debe ser mayor que cero y la publicación debe existir.
+- `autor_id` es obligatorio, mayor que cero y debe corresponder a un usuario existente.
+- `contenido` no puede ser nulo ni vacío.
+- `privacidad_publicacion` es obligatoria y debe ser uno de los valores del enum `PrivacidadPublicacion` (`publico`, `seguidores`, `privado`).
 
 ### `/usuarios`
 
-- `GET /usuarios/ping` → respuesta de prueba
-- `GET /usuarios/validar-estado` → validación de estado del servicio
-- `GET /usuarios/obtener-usuarios` → lista de usuarios
-- `GET /usuarios/{id}` → obtiene un usuario por id
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `GET` | `/usuarios/ping` | Respuesta de prueba (`pong`) |
+| `GET` | `/usuarios/validar-estado` | Validación de estado del servicio |
+| `GET` | `/usuarios/obtener-usuarios` | Lista de usuarios |
+| `GET` | `/usuarios/{id}` | Obtiene un usuario por id |
 
 ## Configuración y base de datos
 
@@ -149,55 +263,42 @@ El archivo `src/main/resources/application.properties` apunta a una base de dato
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/backend_db
 spring.datasource.username=backend_user
+spring.datasource.password=backend_password
 spring.datasource.driver-class-name=org.postgresql.Driver
 ```
 
-Se asume que la conexión y credenciales se configuran localmente o mediante variables de entorno según el entorno de desarrollo.
-
-## Validación realizada
-
-Se validó la estructura del proyecto y el árbol de archivos del microservicio. La organización sigue la convención estándar de un proyecto Spring Boot con separación por capas:
-
-- `controller` → endpoints REST
-- `service` → lógica de negocio
-- `repository` → acceso a datos con JPA
-- `domain` → entidades del negocio
-- `dto` → contratos de entrada/salida
-- `mapper` → conversión entre entidades y DTOs
-- `resources` → configuración de la app
+Ajusta estos valores según tu entorno de desarrollo.
 
 ## Requisitos para ejecutar la aplicación
 
-1. Tener instalado JDK 25 o compatible con el proyecto.
-2. Tener Maven disponible o usar el wrapper incluido (`mvnw`).
-3. Tener PostgreSQL corriendo con la base de datos configurada.
-4. Definir correctamente `JAVA_HOME` antes de ejecutar Maven.
+1. JDK 25.
+2. Maven, o el wrapper incluido (`mvnw`).
+3. PostgreSQL en ejecución con la base de datos `backend_db` creada.
+4. Variable `JAVA_HOME` apuntando al JDK.
 
 ## Cómo correr el proyecto
 
 ```bash
-# En Windows PowerShell
-$env:JAVA_HOME="C:\Ruta\Al\JDK"
+# Linux / macOS
 ./mvnw clean install
 ./mvnw spring-boot:run
 ```
 
-## Observación importante
-
-La validación de compilación actual no pudo completarse en este entorno porque no hay un JDK configurado. Al ejecutar Maven se reportó:
-
-```text
-The JAVA_HOME environment variable is not defined correctly
+```powershell
+# Windows PowerShell
+$env:JAVA_HOME="C:\Ruta\Al\JDK"
+.\mvnw.cmd clean install
+.\mvnw.cmd spring-boot:run
 ```
 
-Esto indica que antes de compilar o levantar el servicio, es necesario instalar/configurar Java y establecer la variable `JAVA_HOME` correctamente.
+Una vez iniciada, la documentación de la API queda disponible en <http://localhost:8080/swagger-ui.html>.
 
-## Próximo paso sugerido
+## Próximos pasos sugeridos
 
-Completar la configuración del entorno Java y continuar con:
-
-- implementación de servicios completos para entidades principales
-- creación de controladores REST con CRUD robusto
-- validación de DTOs, excepciones y manejo de errores
-- configuración de migraciones o scripts DDL para PostgreSQL
-- pruebas unitarias/integración
+- Servicios y endpoints CRUD para el resto de entidades (comentarios, reacciones, perfiles, etc.)
+- Mover la lógica de `UsuarioController` a una capa de servicio
+- Manejo global de excepciones (`@RestControllerAdvice`) con excepciones propias y códigos HTTP adecuados
+- Validación declarativa de DTOs (Bean Validation)
+- Anotaciones OpenAPI (`@Tag`, `@Operation`) para enriquecer la documentación de Swagger
+- Migraciones o scripts DDL para PostgreSQL
+- Pruebas unitarias y de integración
