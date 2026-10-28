@@ -9,8 +9,8 @@ public interface UsuarioService {
     List<ObtenerUsuarioResponse> obtenerUsuarios();
 
     // Método para obtener un usuario por su Id
-    ObtenerUsuarioResponse obtenerUsuarioPorId(Integer id) throws Exception;
+    ObtenerUsuarioResponse obtenerUsuarioPorId(Integer id);
 
     // Elimina un usuario siempre que no tenga publicaciones asociadas
-    void eliminarUsuario(Integer id) throws Exception;
+    void eliminarUsuario(Integer id);
 }

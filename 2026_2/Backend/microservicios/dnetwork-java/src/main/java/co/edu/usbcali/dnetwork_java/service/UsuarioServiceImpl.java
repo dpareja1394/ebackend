@@ -2,6 +2,9 @@ package co.edu.usbcali.dnetwork_java.service;
 
 import co.edu.usbcali.dnetwork_java.domain.Usuario;
 import co.edu.usbcali.dnetwork_java.dto.response.ObtenerUsuarioResponse;
+import co.edu.usbcali.dnetwork_java.exception.ConflictoException;
+import co.edu.usbcali.dnetwork_java.exception.RecursoNoEncontradoException;
+import co.edu.usbcali.dnetwork_java.exception.ValidacionException;
 import co.edu.usbcali.dnetwork_java.mapper.UsuarioMapper;
 import co.edu.usbcali.dnetwork_java.repository.PublicacionRepository;
 import co.edu.usbcali.dnetwork_java.repository.UsuarioRepository;
@@ -32,7 +35,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public ObtenerUsuarioResponse obtenerUsuarioPorId(Integer id) throws Exception {
+    public ObtenerUsuarioResponse obtenerUsuarioPorId(Integer id) {
         log.info("Se ha invocado método obtenerUsuarioPorId con argumentos id: {}", id);
         return UsuarioMapper.usuarioAObtenerUsuarioResponse(obtenerUsuario(id));
     }
@@ -40,32 +43,32 @@ public class UsuarioServiceImpl implements UsuarioService {
     // Eliminación física de un usuario, solo si no tiene publicaciones
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void eliminarUsuario(Integer id) throws Exception {
+    public void eliminarUsuario(Integer id) {
         log.info("Se ha invocado método eliminarUsuario con argumentos id: {}", id);
         Usuario usuario = obtenerUsuario(id);
 
         if (publicacionRepository.existsByAutorId(id)) {
             log.error("No se puede eliminar el usuario con id: " + id + " porque tiene publicaciones asociadas.");
-            throw new Exception("No se puede eliminar el usuario con id: " + id + " porque tiene publicaciones asociadas.");
+            throw new ConflictoException("No se puede eliminar el usuario con id: " + id + " porque tiene publicaciones asociadas.");
         }
 
         usuarioRepository.delete(usuario);
         log.info("Se ha eliminado el usuario con id: {}", id);
     }
 
-    private Usuario obtenerUsuario(Integer id) throws Exception {
+    private Usuario obtenerUsuario(Integer id) {
         if (id == null) {
             log.error("El id no puede ser nulo");
-            throw new Exception("El id no puede ser nulo");
+            throw new ValidacionException("El id no puede ser nulo");
         }
         if (id <= 0) {
             log.error("El valor del id no puede ser inferior o igual a cero");
-            throw new Exception("El valor del id no puede ser inferior o igual a cero");
+            throw new ValidacionException("El valor del id no puede ser inferior o igual a cero");
         }
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("No existe el usuario con el id: {}.", id);
-                    return new Exception("No existe el usuario con el id: " + id + ".");
+                    return new RecursoNoEncontradoException("No existe el usuario con el id: " + id + ".");
                 });
     }
 }

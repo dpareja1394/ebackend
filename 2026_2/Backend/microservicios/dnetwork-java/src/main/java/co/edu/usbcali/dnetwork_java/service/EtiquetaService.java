@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface EtiquetaService {
     List<ObtenerEtiquetaResponse> obtenerEtiquetas();
-    ObtenerEtiquetaResponse obtenerEtiquetaPorId(Integer id) throws Exception;
-    ObtenerEtiquetaResponse crearEtiqueta(CrearEtiquetaRequest crearEtiqueta) throws Exception;
+    ObtenerEtiquetaResponse obtenerEtiquetaPorId(Integer id);
+    ObtenerEtiquetaResponse crearEtiqueta(CrearEtiquetaRequest crearEtiqueta);
 }

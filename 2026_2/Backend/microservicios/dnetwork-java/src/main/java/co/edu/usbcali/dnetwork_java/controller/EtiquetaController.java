@@ -37,7 +37,7 @@ public class EtiquetaController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ObtenerEtiquetaResponse> obtenerEtiquetaPorId(@PathVariable Integer id) throws Exception {
+    ResponseEntity<ObtenerEtiquetaResponse> obtenerEtiquetaPorId(@PathVariable Integer id) {
         log.info("Petición GET /etiquetas/{}", id);
         try {
             return ResponseEntity.ok(etiquetaService.obtenerEtiquetaPorId(id));
@@ -48,7 +48,7 @@ public class EtiquetaController {
     }
 
     @PostMapping("/crear")
-    ResponseEntity<ObtenerEtiquetaResponse> crearEtiqueta(@RequestBody CrearEtiquetaRequest etiquetaRequest) throws Exception {
+    ResponseEntity<ObtenerEtiquetaResponse> crearEtiqueta(@RequestBody CrearEtiquetaRequest etiquetaRequest) {
         log.info("Petición POST /etiquetas/crear con body: {}", etiquetaRequest);
         try {
             ObtenerEtiquetaResponse etiquetaResponse =

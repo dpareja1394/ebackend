@@ -11,13 +11,13 @@ public interface PublicacionService {
     List<ObtenerPublicacionResponse> obtenerPublicaciones();
 
     // Método para obtener una publicación por su Id
-    ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id) throws Exception;
+    ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id);
 
     // Método para crear una nueva publicación en Base de Datos
-    ObtenerPublicacionResponse crearPublicacion(CrearPublicacionRequest crearPublicacionRequest) throws Exception;
+    ObtenerPublicacionResponse crearPublicacion(CrearPublicacionRequest crearPublicacionRequest);
 
     // Método para modificar una publicación existente en Base de Datos
-    ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) throws Exception;
+    ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest);
 
-    void eliminarPublicacion(Integer id) throws Exception;
+    void eliminarPublicacion(Integer id);
 }

@@ -6,6 +6,8 @@ import co.edu.usbcali.dnetwork_java.domain.enums.PrivacidadPublicacion;
 import co.edu.usbcali.dnetwork_java.dto.request.CrearPublicacionRequest;
 import co.edu.usbcali.dnetwork_java.dto.request.ModificarPublicacionRequest;
 import co.edu.usbcali.dnetwork_java.dto.response.ObtenerPublicacionResponse;
+import co.edu.usbcali.dnetwork_java.exception.RecursoNoEncontradoException;
+import co.edu.usbcali.dnetwork_java.exception.ValidacionException;
 import co.edu.usbcali.dnetwork_java.mapper.PublicacionMapper;
 import co.edu.usbcali.dnetwork_java.repository.PublicacionRepository;
 import co.edu.usbcali.dnetwork_java.repository.UsuarioRepository;
@@ -41,31 +43,31 @@ public class PublicacionServiceImpl implements PublicacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id) throws Exception {
+    public ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id) {
         log.info("Se ha invocado método obtenerPublicacionPorId con argumentos id: "+id);
         return PublicacionMapper.publicacionAObtenerPublicacionResponse(obtenerPublicacion(id));
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ObtenerPublicacionResponse crearPublicacion(CrearPublicacionRequest crearPublicacionRequest) throws Exception {
+    public ObtenerPublicacionResponse crearPublicacion(CrearPublicacionRequest crearPublicacionRequest) {
         log.info(
                 "Se ha invocado método crearPublicacion con objeto crearPublicacionRequest: {}",
                 crearPublicacionRequest);
         // Validar objeto #CrearPublicacionRequest
         if (crearPublicacionRequest == null) {
             log.error("El objeto a crear no puede ser nulo");
-            throw new Exception("El objeto a crear no puede ser nulo");
+            throw new ValidacionException("El objeto a crear no puede ser nulo");
         }
         if (crearPublicacionRequest.autorId() == null ||
                 crearPublicacionRequest.autorId() <= 0) {
             log.error("El id del autor no puede ser nulo ni inferior o igual a cero");
-            throw new Exception("El id del autor no puede ser nulo ni inferior o igual a cero");
+            throw new ValidacionException("El id del autor no puede ser nulo ni inferior o igual a cero");
         }
         if (crearPublicacionRequest.contenido() == null ||
                 crearPublicacionRequest.contenido().isBlank()) {
             log.error("El contenido de la publicación no puede ser nulo ni vacío");
-            throw new Exception("El contenido de la publicación no puede ser nulo ni vacío");
+            throw new ValidacionException("El contenido de la publicación no puede ser nulo ni vacío");
         }
 
         // Validar que la privacidad exista en el Enum
@@ -76,7 +78,7 @@ public class PublicacionServiceImpl implements PublicacionService {
                 .findById(crearPublicacionRequest.autorId())
                 .orElseThrow(() -> {
                     log.error("No se ha encontrado el autor con el id: {}.", crearPublicacionRequest.autorId());
-                    return new Exception("No se ha encontrado el autor con el id: " + crearPublicacionRequest.autorId() + ".");
+                    return new RecursoNoEncontradoException("No se ha encontrado el autor con el id: " + crearPublicacionRequest.autorId() + ".");
                 });
 
         // Convertir desde el Request hacia el Entity
@@ -98,17 +100,17 @@ public class PublicacionServiceImpl implements PublicacionService {
     // Implementar la lógica para modificar una publicación
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) throws Exception {
+    public ObtenerPublicacionResponse modificarPublicacion(Integer id, ModificarPublicacionRequest modificarPublicacionRequest) {
         log.info("Se ha invocado método modificarPublicacion con argumentos id: {} y objeto modificarPublicacionRequest: {}", id, modificarPublicacionRequest);
         // Validar los atributos del objeto modificarPublicacionRequest
         if (modificarPublicacionRequest == null) {
             log.error("El objeto a modificar no puede ser nulo");
-            throw new Exception("El objeto a modificar no puede ser nulo");
+            throw new ValidacionException("El objeto a modificar no puede ser nulo");
         }
         if (modificarPublicacionRequest.contenido() == null ||
                 modificarPublicacionRequest.contenido().isBlank()) {
             log.error("El contenido de la publicación no puede ser nulo ni vacío");
-            throw new Exception("El contenido de la publicación no puede ser nulo ni vacío");
+            throw new ValidacionException("El contenido de la publicación no puede ser nulo ni vacío");
         }
         PrivacidadPublicacion privacidad = validarPrivacidadPublicacion(modificarPublicacionRequest.privacidadPublicacion());
         Publicacion publicacion = obtenerPublicacion(id);
@@ -126,7 +128,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     // Eliminación física de una publicación
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void eliminarPublicacion(Integer id) throws Exception {
+    public void eliminarPublicacion(Integer id) {
         log.info("Se ha invocado método eliminarPublicacion con argumentos id: {}", id);
         validarId(id);
         Publicacion publicacion = obtenerPublicacion(id);
@@ -137,38 +139,38 @@ public class PublicacionServiceImpl implements PublicacionService {
 
 
     // Valida que el texto de privacidad llegue con dato y exista en el Enum, retorna el valor del Enum
-    private PrivacidadPublicacion validarPrivacidadPublicacion(String privacidadPublicacion) throws Exception {
+    private PrivacidadPublicacion validarPrivacidadPublicacion(String privacidadPublicacion) {
         if (privacidadPublicacion == null || privacidadPublicacion.isBlank()) {
             log.error("No ha llegado un valor para privacidad-publicacion");
-            throw new Exception("No ha llegado un valor para privacidad-publicacion");
+            throw new ValidacionException("No ha llegado un valor para privacidad-publicacion");
         }
         PrivacidadPublicacion privacidad = PrivacidadPublicacion.getPrivacidadPublicacion(privacidadPublicacion);
         if (privacidad == null) {
             log.error("No se ha encontrado la privacidad-publicacion: " + privacidadPublicacion + ".");
-            throw new Exception("No se ha encontrado la privacidad-publicacion: " + privacidadPublicacion + ".");
+            throw new ValidacionException("No se ha encontrado la privacidad-publicacion: " + privacidadPublicacion + ".");
         }
         return privacidad;
     }
 
-    private Publicacion obtenerPublicacion(Integer id) throws Exception {
+    private Publicacion obtenerPublicacion(Integer id) {
         validarId(id);
         // Validar que existe la publicación por ID
         return publicacionRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("No existe la publicación con el id: {}.", id);
-                    return new Exception("No existe la publicación con el id: " + id + ".");
+                    return new RecursoNoEncontradoException("No existe la publicación con el id: " + id + ".");
                 });
     }
 
-    private void validarId(Integer id) throws Exception {
+    private void validarId(Integer id) {
         // Validar que id de la publicación trae dato
         if (id == null) {
             log.error("El id no puede ser nulo");
-            throw new Exception("El id no puede ser nulo");
+            throw new ValidacionException("El id no puede ser nulo");
         }
         if (id <= 0) {
             log.error("El valor del id no puede ser inferior o igual a cero para eliminar");
-            throw new Exception("El valor del id no puede ser inferior o igual a cero para eliminar");
+            throw new ValidacionException("El valor del id no puede ser inferior o igual a cero para eliminar");
         }
     }
 

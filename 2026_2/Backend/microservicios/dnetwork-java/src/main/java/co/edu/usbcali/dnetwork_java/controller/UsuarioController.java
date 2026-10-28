@@ -35,7 +35,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ObtenerUsuarioResponse> obtenerUsuarioPorId(@PathVariable Integer id) throws Exception {
+    ResponseEntity<ObtenerUsuarioResponse> obtenerUsuarioPorId(@PathVariable Integer id) {
         log.info("Petición GET /usuarios/{}", id);
         try {
             return ResponseEntity.ok(usuarioService.obtenerUsuarioPorId(id));
@@ -46,7 +46,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) throws Exception {
+    ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
         log.info("Petición DELETE /usuarios/eliminar/{}", id);
         try {
             usuarioService.eliminarUsuario(id);

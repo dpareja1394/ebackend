@@ -29,7 +29,7 @@ public class PublicacionController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ObtenerPublicacionResponse> obtenerPublicacionPorId(@PathVariable Integer id) throws Exception {
+    ResponseEntity<ObtenerPublicacionResponse> obtenerPublicacionPorId(@PathVariable Integer id) {
         log.info("Petición GET /publicaciones/{}", id);
         try {
             return ResponseEntity.ok(publicacionService.obtenerPublicacionPorId(id));
@@ -40,7 +40,7 @@ public class PublicacionController {
     }
 
     @PostMapping("/crear")
-    ResponseEntity<ObtenerPublicacionResponse> crearPublicacion(@RequestBody CrearPublicacionRequest crearPublicacionRequest) throws Exception {
+    ResponseEntity<ObtenerPublicacionResponse> crearPublicacion(@RequestBody CrearPublicacionRequest crearPublicacionRequest) {
         log.info("Petición POST /publicaciones/crear con body: {}", crearPublicacionRequest);
         try {
             return new ResponseEntity<>(publicacionService.crearPublicacion(crearPublicacionRequest), HttpStatus.CREATED);
@@ -53,7 +53,7 @@ public class PublicacionController {
     @PutMapping("/modificar/{id}")
     ResponseEntity<ObtenerPublicacionResponse> modificarPublicacion(
             @PathVariable Integer id,
-            @RequestBody ModificarPublicacionRequest modificarPublicacionRequest) throws Exception {
+            @RequestBody ModificarPublicacionRequest modificarPublicacionRequest) {
         log.info("Petición PUT /publicaciones/modificar/{} con body: {}", id, modificarPublicacionRequest);
         try {
             return ResponseEntity.ok(
@@ -66,7 +66,7 @@ public class PublicacionController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    ResponseEntity<Void> eliminarPublicacion(@PathVariable Integer id) throws Exception {
+    ResponseEntity<Void> eliminarPublicacion(@PathVariable Integer id) {
         log.info("Petición DELETE /publicaciones/eliminar/{}", id);
         try {
             publicacionService.eliminarPublicacion(id);
