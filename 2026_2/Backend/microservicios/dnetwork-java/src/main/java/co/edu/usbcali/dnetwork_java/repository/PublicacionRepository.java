@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PublicacionRepository extends JpaRepository<Publicacion, Integer> {
+    // Indica si el usuario es autor de al menos una publicación
+    boolean existsByAutorId(Integer autorId);
 }

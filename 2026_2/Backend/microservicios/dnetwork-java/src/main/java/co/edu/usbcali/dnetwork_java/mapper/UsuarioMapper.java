@@ -10,7 +10,7 @@ public class UsuarioMapper {
     // Hace el mapeo para obtener los usuarios por Id y no traer el objeto de la base de datos
     public static ObtenerUsuarioResponse usuarioAObtenerUsuarioResponse(Usuario usuario) {
         return new ObtenerUsuarioResponse(
-          usuario.getId(), usuario.getEmail(), usuario.getUsername(), usuario.getLastLogin());
+          usuario.getId(), usuario.getEmail(), usuario.getUsername(), usuario.getActivo(), usuario.getLastLogin());
     }
 
     public static List<ObtenerUsuarioResponse> listaUsuariosHaciaListaObtenerUsuariosResponse(List<Usuario> usuarios) {

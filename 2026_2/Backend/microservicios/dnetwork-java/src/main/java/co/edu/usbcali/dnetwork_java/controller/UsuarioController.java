@@ -1,15 +1,10 @@
 package co.edu.usbcali.dnetwork_java.controller;
 
-import co.edu.usbcali.dnetwork_java.domain.Usuario;
 import co.edu.usbcali.dnetwork_java.dto.response.ObtenerUsuarioResponse;
-import co.edu.usbcali.dnetwork_java.mapper.UsuarioMapper;
-import co.edu.usbcali.dnetwork_java.repository.UsuarioRepository;
+import co.edu.usbcali.dnetwork_java.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,7 +14,7 @@ public class UsuarioController {
 
     // Inyección de dependencias
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @GetMapping("/ping")
     String pingPong() {
@@ -33,20 +28,27 @@ public class UsuarioController {
 
     @GetMapping("/obtener-usuarios")
     List<ObtenerUsuarioResponse> obtenerUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        List<ObtenerUsuarioResponse> usuariosResponse =
-                UsuarioMapper.listaUsuariosHaciaListaObtenerUsuariosResponse(usuarios);
-        return usuariosResponse;
+        return usuarioService.obtenerUsuarios();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ObtenerUsuarioResponse> obtenerUsuarioPorId(@PathVariable Integer id) {
-        Usuario usuario = usuarioRepository.findById(id).orElse(null);
-        assert usuario != null;
-        ObtenerUsuarioResponse usuarioResponse =
-                UsuarioMapper.usuarioAObtenerUsuarioResponse(usuario);
-        return ResponseEntity.ok(
-            usuarioResponse
-        );
+    ResponseEntity<ObtenerUsuarioResponse> obtenerUsuarioPorId(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(usuarioService.obtenerUsuarioPorId(id));
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) throws Exception {
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/activar/{id}")
+    ResponseEntity<ObtenerUsuarioResponse> activarUsuario(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(usuarioService.activarUsuario(id));
+    }
+
+    @PutMapping("/desactivar/{id}")
+    ResponseEntity<ObtenerUsuarioResponse> desactivarUsuario(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(usuarioService.desactivarUsuario(id));
     }
 }
