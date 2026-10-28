@@ -30,10 +30,6 @@ public class Usuario {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "activo", nullable = false)
-    @Builder.Default
-    private Boolean activo = true;
-
     @Column(name = "last_login", nullable = true)
     private LocalDateTime lastLogin;
 

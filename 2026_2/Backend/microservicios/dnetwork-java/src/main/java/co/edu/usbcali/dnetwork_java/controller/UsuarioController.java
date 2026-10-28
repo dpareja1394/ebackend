@@ -42,13 +42,4 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/activar/{id}")
-    ResponseEntity<ObtenerUsuarioResponse> activarUsuario(@PathVariable Integer id) throws Exception {
-        return ResponseEntity.ok(usuarioService.activarUsuario(id));
-    }
-
-    @PutMapping("/desactivar/{id}")
-    ResponseEntity<ObtenerUsuarioResponse> desactivarUsuario(@PathVariable Integer id) throws Exception {
-        return ResponseEntity.ok(usuarioService.desactivarUsuario(id));
-    }
 }

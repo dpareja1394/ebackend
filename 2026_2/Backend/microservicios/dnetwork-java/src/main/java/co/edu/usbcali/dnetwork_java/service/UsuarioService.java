@@ -13,10 +13,4 @@ public interface UsuarioService {
 
     // Elimina un usuario siempre que no tenga publicaciones asociadas
     void eliminarUsuario(Integer id) throws Exception;
-
-    // Activa un usuario que se encuentra inactivo
-    ObtenerUsuarioResponse activarUsuario(Integer id) throws Exception;
-
-    // Desactiva un usuario que se encuentra activo
-    ObtenerUsuarioResponse desactivarUsuario(Integer id) throws Exception;
 }

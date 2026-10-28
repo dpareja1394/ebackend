@@ -6,7 +6,6 @@ public record ObtenerUsuarioResponse(
         Integer id,
         String email,
         String username,
-        Boolean activo,
         LocalDateTime lastLogin
 ) {
 }

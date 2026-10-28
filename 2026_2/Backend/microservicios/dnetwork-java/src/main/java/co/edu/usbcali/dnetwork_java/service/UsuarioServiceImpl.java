@@ -5,6 +5,7 @@ import co.edu.usbcali.dnetwork_java.dto.response.ObtenerUsuarioResponse;
 import co.edu.usbcali.dnetwork_java.mapper.UsuarioMapper;
 import co.edu.usbcali.dnetwork_java.repository.PublicacionRepository;
 import co.edu.usbcali.dnetwork_java.repository.UsuarioRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -44,36 +45,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         usuarioRepository.delete(usuario);
-    }
-
-    @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ObtenerUsuarioResponse activarUsuario(Integer id) throws Exception {
-        Usuario usuario = obtenerUsuario(id);
-
-        if (Boolean.TRUE.equals(usuario.getActivo())) {
-            throw new Exception("El usuario con id: " + id + " ya se encuentra activo.");
-        }
-
-        usuario.setActivo(true);
-        usuario = usuarioRepository.save(usuario);
-
-        return UsuarioMapper.usuarioAObtenerUsuarioResponse(usuario);
-    }
-
-    @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ObtenerUsuarioResponse desactivarUsuario(Integer id) throws Exception {
-        Usuario usuario = obtenerUsuario(id);
-
-        if (Boolean.FALSE.equals(usuario.getActivo())) {
-            throw new Exception("El usuario con id: " + id + " ya se encuentra inactivo.");
-        }
-
-        usuario.setActivo(false);
-        usuario = usuarioRepository.save(usuario);
-
-        return UsuarioMapper.usuarioAObtenerUsuarioResponse(usuario);
     }
 
     private Usuario obtenerUsuario(Integer id) throws Exception {

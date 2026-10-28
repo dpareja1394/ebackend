@@ -9,6 +9,7 @@ import co.edu.usbcali.dnetwork_java.dto.response.ObtenerPublicacionResponse;
 import co.edu.usbcali.dnetwork_java.mapper.PublicacionMapper;
 import co.edu.usbcali.dnetwork_java.repository.PublicacionRepository;
 import co.edu.usbcali.dnetwork_java.repository.UsuarioRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PublicacionServiceImpl implements PublicacionService {
 
     // Inyección de dependencias del Repository
@@ -30,6 +32,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     @Transactional(readOnly = true)
     public List<ObtenerPublicacionResponse> obtenerPublicaciones() {
+        log.info("Se ha invocado método obtenerPublicaciones");
         return PublicacionMapper.
                 listaPublicacionesHaciaListaObtenerPublicacionesResponse(
                         publicacionRepository.findAll()
@@ -39,12 +42,16 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     @Transactional(readOnly = true)
     public ObtenerPublicacionResponse obtenerPublicacionPorId(Integer id) throws Exception {
+        log.info("Se ha invocado método obtenerPublicacionPorId con argumentos id: "+id);
         return PublicacionMapper.publicacionAObtenerPublicacionResponse(obtenerPublicacion(id));
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public ObtenerPublicacionResponse crearPublicacion(CrearPublicacionRequest crearPublicacionRequest) throws Exception {
+        log.info(
+                "Se ha invocado método crearPublicacion con objeto crearPublicacionRequest: "+
+                        crearPublicacionRequest.toString());
         // Validar objeto #CrearPublicacionRequest
         if (crearPublicacionRequest == null) {
             throw new Exception("El objeto a crear no puede ser nulo");
@@ -133,13 +140,13 @@ public class PublicacionServiceImpl implements PublicacionService {
 
     private Publicacion obtenerPublicacion(Integer id) throws Exception {
         validarId(id);
-        // Validar que existe la publicación por el id indicado
+        // Validar que existe la publicación por ID
         return publicacionRepository.findById(id)
                 .orElseThrow(() -> new Exception("No existe la publicación con el id: " + id + "."));
     }
 
     private void validarId(Integer id) throws Exception {
-        // Validar que el id de la publicación trae dato
+        // Validar que id de la publicación trae dato
         if (id == null) {
             throw new Exception("El id no puede ser nulo");
         }
